@@ -17,4 +17,6 @@ class ColorConstant {
   static Color containerBackground = const Color.fromRGBO(118, 118, 128, 0.12);
   static Color cblue = const Color(0xff1470EF);
   static Color cPink = const Color(0xffF63D67);
+  static Color acceptedBackground = const Color.fromRGBO(42, 220, 139, 0.1);
+  static Color rejectedBackground = const Color.fromRGBO(249, 45, 32, 0.1);
 }

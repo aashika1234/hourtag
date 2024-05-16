@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_svg/svg.dart';
+import 'package:hourtag/home/dashboard/cubit/dashboard_cubit.dart';
+
 import 'package:hourtag/util/color_constant.dart';
 import 'package:hourtag/util/weight_constant.dart';
 import 'package:hourtag/widgets/shifts/shift_detail.dart';
@@ -8,8 +10,9 @@ import 'package:hourtag/widgets/shifts/shift_detail.dart';
 class PastShiftWidget extends StatelessWidget {
   const PastShiftWidget({
     super.key,
+    required this.cubit,
   });
-
+  final DashboardCubit cubit;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -101,8 +104,9 @@ class PastShiftWidget extends StatelessWidget {
                 itemBuilder: (context, ind) {
                   return Container(
                     padding: const EdgeInsets.only(right: 12, left: 12),
-                    child: const ShiftDetail(
+                    child: ShiftDetail(
                       color: Colors.black,
+                      cubit: cubit,
                     ),
                   );
                 },

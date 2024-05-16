@@ -7,10 +7,12 @@ class NoteWidget extends StatelessWidget {
       {super.key,
       required this.hintText,
       required this.controller,
-      required this.onTap});
+      required this.onTap,
+      required this.max});
   final String hintText;
   final TextEditingController controller;
   final void Function() onTap;
+  final int max;
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -21,7 +23,10 @@ class NoteWidget extends StatelessWidget {
           width: MediaQuery.of(context).size.width * 0.68,
           child: TextField(
             controller: controller,
-            maxLines: 6,
+            style: TextStyle(
+                color: ColorConstant.textGrey2,
+                fontWeight: FontWeightConstant.normal),
+            maxLines: max,
             decoration: InputDecoration(
               filled: true,
               fillColor: Colors.black,

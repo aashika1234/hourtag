@@ -92,8 +92,8 @@ class DashboardCubit extends Cubit<DashboardState> {
   }
 
   Future<void> getUserProfile() async {
+    print(state.status);
     UserProfileModel data = await repo.getDashboardData(authToken);
-
     List<TeamActivityModel> teamdata = await repo.getTeamActivity(
         authToken, data.selectedCompany?.companyId ?? 0);
     OngoingShiftModel ongoingShiftData = await repo.getOngoingShift(
@@ -101,11 +101,13 @@ class DashboardCubit extends Cubit<DashboardState> {
     CompanyProfileModel companyData = await repo.getCompanyProfile(
         authToken, data.selectedCompany?.companyId ?? 0);
     emit(state.copyWith(
-        userProfileModel: data,
-        status: Status.loaded,
-        teamActivityModel: teamdata,
-        companyProfileModel: companyData,
-        ongoingShiftModel: ongoingShiftData));
+      userProfileModel: data,
+      teamActivityModel: teamdata,
+      companyProfileModel: companyData,
+      ongoingShiftModel: ongoingShiftData,
+    ));
+    emit(state.copyWith(status: Status.loaded));
+    print(state.status);
     startTimer(false);
   }
 }

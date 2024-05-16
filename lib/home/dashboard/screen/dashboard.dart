@@ -13,13 +13,12 @@ import 'package:hourtag/home/dashboard/widgets/project_list.dart';
 import 'package:hourtag/widgets/note_widget.dart';
 
 class DashboardScreen extends StatefulWidget {
-  const DashboardScreen({super.key});
-
+  const DashboardScreen({super.key, required this.cubit});
+  final DashboardCubit cubit;
   @override
   State<DashboardScreen> createState() => _DashboardScreenState();
 }
 
-late DashboardCubit cubit;
 late AuthCubit authCubit;
 
 class TimeParts {
@@ -33,9 +32,8 @@ class TimeParts {
 class _DashboardScreenState extends State<DashboardScreen> {
   @override
   void initState() {
-    cubit = context.read<DashboardCubit>();
     authCubit = context.read<AuthCubit>();
-    cubit.getUserProfile();
+    widget.cubit.getUserProfile();
     super.initState();
   }
 
@@ -76,20 +74,23 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 height: 63,
               ),
               BlocBuilder<DashboardCubit, DashboardState>(
+                bloc: widget.cubit,
                 builder: (context, state) {
                   TeamActivityModel data = getSpecificData(
                       state.teamActivityModel, state.userProfileModel.id ?? 0);
                   TimeParts timeParts =
-                      formatTime(cubit.state.durationInSeconds);
+                      formatTime(widget.cubit.state.durationInSeconds);
                   return state.status == Status.loading
-                      ? Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            CircularProgressIndicator(
-                              color: ColorConstant.primaryColor,
-                            ),
-                          ],
+                      ? Padding(
+                          padding: const EdgeInsets.only(top: 200),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              CircularProgressIndicator(
+                                color: ColorConstant.primaryColor,
+                              ),
+                            ],
+                          ),
                         )
                       : Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -259,7 +260,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                                               context) {
                                                             return BlocProvider
                                                                 .value(
-                                                              value: cubit,
+                                                              value:
+                                                                  widget.cubit,
                                                               child: Container(
                                                                 height: MediaQuery.of(
                                                                             context)
@@ -332,7 +334,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                                                                 state) {
                                                                           TimeParts
                                                                               timeParts =
-                                                                              formatTime(cubit.state.durationInSeconds);
+                                                                              formatTime(widget.cubit.state.durationInSeconds);
                                                                           return Row(
                                                                             children: [
                                                                               Text(
@@ -427,9 +429,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                                                             note,
                                                                         onTap:
                                                                             () {
-                                                                          cubit.stopTimer(
-                                                                              note.text);
+                                                                          widget
+                                                                              .cubit
+                                                                              .stopTimer(note.text);
                                                                         },
+                                                                        max: 6,
                                                                       )
                                                                     ],
                                                                   ),
@@ -437,8 +441,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                                               ),
                                                             );
                                                           })
-                                                      .then((value) =>
-                                                          cubit.resetTimer());
+                                                      .then((value) => widget
+                                                          .cubit
+                                                          .resetTimer());
                                                 },
                                                 child: DashboardButton(
                                                   text: 'End Shift',
@@ -453,7 +458,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                           )
                                         : InkWell(
                                             onTap: () {
-                                              cubit.startTimer(true);
+                                              widget.cubit.startTimer(true);
                                             },
                                             child: DashboardButton(
                                               text: 'Start Shift',

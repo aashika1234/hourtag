@@ -1,9 +1,8 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'package:hourtag/splash_Screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'cubit/cubit/auth_cubit.dart';
 
 void main() {
@@ -18,6 +17,22 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  StreamController controller = StreamController.broadcast();
+  late Timer timer;
+  int val = 0;
+  void startTimer() {
+    timer = Timer(const Duration(seconds: 90), () {
+      val++;
+      controller.add(val);
+    });
+  }
+
+  @override
+  void initState() {
+    startTimer();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     Future<String?> getToken() async {

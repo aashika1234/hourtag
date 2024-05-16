@@ -20,7 +20,6 @@ class DashboardRepo {
           },
         ),
       );
-
       return UserProfileModel.fromJson(response.data);
     } on DioException catch (e) {
       print('Error here 1');
@@ -96,6 +95,7 @@ class DashboardRepo {
           },
         ),
       );
+      print('hihihihi');
       print(response.data);
       return OngoingShiftModel.fromJson(response.data);
     } on DioException catch (e) {

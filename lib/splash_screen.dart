@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hourtag/cubit/cubit/auth_cubit.dart';
 import 'package:hourtag/home/bottom_navigation.dart';
+import 'package:hourtag/home/dashboard/cubit/dashboard_cubit.dart';
 
 import 'package:hourtag/home/dashboard/repo/dashboard_repo.dart';
 import 'package:hourtag/login/screen/login_screen.dart';
@@ -30,11 +31,14 @@ class _SplashScreenState extends State<SplashScreen> {
         if (!context.mounted) {
           return;
         }
+        // print({'hello here${cubit.state.authToken}'});
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-              builder: (context) =>
-                  BottomNavigation(authToken: cubit.state.authToken)),
+              builder: (context) => BlocProvider(
+                    create: (context) => DashboardCubit(cubit.state.authToken),
+                    child: BottomNavigation(authToken: cubit.state.authToken),
+                  )),
         );
       } catch (e) {
         Navigator.pushReplacement(

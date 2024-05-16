@@ -4,10 +4,13 @@ import 'package:flutter_svg/svg.dart';
 import 'package:hourtag/cubit/cubit/auth_cubit.dart';
 import 'package:hourtag/home/bottom_navigation.dart';
 import 'package:hourtag/login/cubit/login_cubit.dart';
+import 'package:hourtag/login/screen/forget_password.dart';
 import 'package:hourtag/util/color_constant.dart';
 import 'package:hourtag/util/global_style.dart';
 import 'package:hourtag/util/weight_constant.dart';
 import 'package:hourtag/widgets/custom_button.dart';
+
+import '../../home/dashboard/cubit/dashboard_cubit.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -22,16 +25,17 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController passwordController =
       TextEditingController(text: "HelloWorld123");
   late AuthCubit authCubit;
+  late LoginCubit cubit = LoginCubit(authCubit: authCubit);
   @override
   void initState() {
     authCubit = context.read<AuthCubit>();
     super.initState();
   }
 
+  final whiteTextStyle = const TextStyle(color: Colors.white);
+
   @override
   Widget build(BuildContext context) {
-    const whiteTextStyle = TextStyle(color: Colors.white);
-    LoginCubit cubit = LoginCubit(authCubit: context.read<AuthCubit>());
     return BlocProvider.value(
       value: cubit,
       child: Scaffold(
@@ -102,52 +106,73 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             BlocBuilder<LoginCubit, LoginState>(
               builder: (context, state) {
-                return CustomnButton(
-                  text: 'Log in',
-                  onTap: () async {
-                    int result = await context
-                        .read<LoginCubit>()
-                        .login(emailController.text, passwordController.text);
+                return state.status == Status.loading
+                    ? Container(
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        decoration: BoxDecoration(
+                            color: ColorConstant.primaryColor,
+                            borderRadius: BorderRadius.circular(12)),
+                        child: Center(
+                            child: CircularProgressIndicator(
+                          color: ColorConstant.backgroundColor,
+                        )),
+                      )
+                    : CustomnButton(
+                        text: 'Log in',
+                        onTap: () async {
+                          int result = await context.read<LoginCubit>().login(
+                              emailController.text, passwordController.text);
 
-                    if (!context.mounted) {
-                      return;
-                    }
+                          if (!context.mounted) {
+                            return;
+                          }
 
-                    if (result == 1) {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => BottomNavigation(
-                                authToken: authCubit.state.authToken)),
+                          if (result == 1) {
+                            print('auth token here ${authCubit.authToken}');
+                            Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => BlocProvider(
+                                          create: (context) => DashboardCubit(
+                                              authCubit.state.authToken),
+                                          child: BottomNavigation(
+                                              authToken:
+                                                  authCubit.state.authToken),
+                                        )));
+                          } else {
+                            final snackBar = SnackBar(
+                              backgroundColor: ColorConstant.red,
+                              content: const Text(
+                                'Invalid credentials',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              behavior: SnackBarBehavior.floating,
+                            );
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(snackBar);
+                          }
+                        },
                       );
-                    } else {
-                      final snackBar = SnackBar(
-                        backgroundColor: ColorConstant
-                            .red, // Use your constant color directly
-                        content: const Text(
-                          'Invalid credentials',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              color:
-                                  Colors.white), // Optional: adjust text style
-                        ),
-                        behavior: SnackBarBehavior.floating,
-                      );
-                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                    }
-                  },
-                );
               },
             ),
             const SizedBox(
               height: 10,
             ),
-            Text(
-              'Forget password?',
-              style: TextStyle(
-                  color: ColorConstant.blue,
-                  fontSize: 16,
-                  fontWeight: FontWeightConstant.extraBold),
+            InkWell(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const ForgetPassword()));
+              },
+              child: Text(
+                'Forget password?',
+                style: TextStyle(
+                    color: ColorConstant.blue,
+                    fontSize: 16,
+                    fontWeight: FontWeightConstant.extraBold),
+              ),
             ),
             const SizedBox(
               height: 10,
@@ -163,7 +188,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(
                   width: 24,
                 ),
-                const Text(
+                Text(
                   'OR',
                   style: whiteTextStyle,
                 ),
@@ -181,21 +206,9 @@ class _LoginScreenState extends State<LoginScreen> {
             const SizedBox(
               height: 10,
             ),
-            Container(
-              padding: const EdgeInsets.symmetric(vertical: 18),
-              decoration: BoxDecoration(
-                  border: Border.all(
-                    color: ColorConstant.primaryColor,
-                  ),
-                  borderRadius: BorderRadius.circular(12)),
-              child: const Center(
-                  child: Text(
-                'Sign in with Google',
-                style: TextStyle(
-                    fontSize: 17,
-                    fontWeight: FontWeightConstant.bold,
-                    color: Colors.white),
-              )),
+            BorderedButton(
+              text: 'Sign in with Google',
+              onTap: () {},
             ),
             const Spacer(),
             Padding(
@@ -212,6 +225,34 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             )
           ]),
+        )),
+      ),
+    );
+  }
+}
+
+class BorderedButton extends StatelessWidget {
+  const BorderedButton({super.key, required this.text, required this.onTap});
+  final String text;
+  final void Function()? onTap;
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 18),
+        decoration: BoxDecoration(
+            border: Border.all(
+              color: ColorConstant.primaryColor,
+            ),
+            borderRadius: BorderRadius.circular(12)),
+        child: Center(
+            child: Text(
+          text,
+          style: const TextStyle(
+              fontSize: 17,
+              fontWeight: FontWeightConstant.bold,
+              color: Colors.white),
         )),
       ),
     );

@@ -1,12 +1,13 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:hourtag/cubit/shifts/shifts_cubit.dart';
 import 'package:hourtag/home/dashboard/cubit/dashboard_cubit.dart';
 import 'package:hourtag/home/dashboard/screen/dashboard.dart';
-import 'package:hourtag/screen/shifts_screen.dart';
+import 'package:hourtag/home/shifts/screen/shifts_screen.dart';
+
 import 'package:hourtag/util/color_constant.dart';
+
+import 'shifts/cubit/shifts_cubit.dart';
 
 class BottomNavigation extends StatefulWidget {
   const BottomNavigation({
@@ -20,20 +21,32 @@ class BottomNavigation extends StatefulWidget {
 
 class _BottomNavigationState extends State<BottomNavigation> {
   int selectedIndex = 0;
+  late DashboardCubit cubit;
+  @override
+  void initState() {
+    cubit = context.read<DashboardCubit>();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     List<Widget> screen = <Widget>[
       BlocProvider<DashboardCubit>(
         create: (context) => DashboardCubit(widget.authToken),
-        child: const DashboardScreen(),
-      ),
-      MultiBlocProvider(providers: [
-        BlocProvider<DashboardCubit>(
-          create: (context) => DashboardCubit(widget.authToken),
+        child: DashboardScreen(
+          cubit: cubit,
         ),
-        BlocProvider<ShiftsCubit>(create: (context) => ShiftsCubit())
-      ], child: const ShiftsScreen())
+      ),
+      MultiBlocProvider(
+          providers: [
+            BlocProvider<DashboardCubit>(
+              create: (context) => DashboardCubit(widget.authToken),
+            ),
+            BlocProvider<ShiftsCubit>(create: (context) => ShiftsCubit())
+          ],
+          child: ShiftsScreen(
+            dcubit: cubit,
+          ))
     ];
     return Scaffold(
       backgroundColor: ColorConstant.backgroundColor,
