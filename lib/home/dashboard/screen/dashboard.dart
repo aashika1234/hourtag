@@ -23,6 +23,10 @@ class DashboardScreen extends StatefulWidget {
 late AuthCubit authCubit;
 
 class TimeParts {
+  /*
+  blah blah
+  blah blah
+  */
   String hours = '00';
   String minutes = '00';
   String seconds = '00';

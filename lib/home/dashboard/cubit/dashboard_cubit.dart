@@ -29,6 +29,7 @@ class DashboardCubit extends Cubit<DashboardState> {
             index: index)) {
     _startSocket();
   }
+  //test
   DashboardRepo repo = DashboardRepo();
   final String authToken;
   late Socket socket;
