@@ -1,5 +1,7 @@
 part of 'login_cubit.dart';
 
+enum Status { loading, loaded }
+
 class LoginState {
   final String username;
   final String password;

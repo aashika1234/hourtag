@@ -1,8 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:hourtag/cubit/cubit/auth_cubit.dart';
-import 'package:hourtag/home/dashboard/cubit/dashboard_cubit.dart';
 import 'package:hourtag/login/repo/login_repo.dart';
-
 part 'login_state.dart';
 
 class LoginCubit extends Cubit<LoginState> {
@@ -13,7 +11,7 @@ class LoginCubit extends Cubit<LoginState> {
     try {
       emit(state.copyWith(status: Status.loading));
       String token = await repo.login(username, password);
-       authCubit.updateAuthToken(token);
+      authCubit.updateAuthToken(token);
       print('Here is the token  $token');
       print('Successful');
       emit(state.copyWith(status: Status.loaded));
