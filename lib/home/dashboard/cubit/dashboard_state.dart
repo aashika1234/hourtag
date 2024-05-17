@@ -1,27 +1,33 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 part of 'dashboard_cubit.dart';
 
-enum Status { loading, loaded }
+enum DashboardStatus { loading, loaded, error }
+
+enum SocketStatus { initial, connected, disconnected, error, reconnecting }
 
 class DashboardState {
   final int durationInSeconds;
   final int selectedIndex;
+  final SocketStatus socketStatus;
   final bool started;
-  final Status status;
+  final DashboardStatus status;
   final UserProfileModel userProfileModel;
   final List<TeamActivityModel> teamActivityModel;
   final CompanyProfileModel companyProfileModel;
   final StartShiftModel startShiftModel;
   final OngoingShiftModel ongoingShiftModel;
+  final String errormsg;
   const DashboardState(
       {required this.selectedIndex,
       required this.durationInSeconds,
+      required this.socketStatus,
       required this.started,
+      required this.status,
       required this.userProfileModel,
       required this.teamActivityModel,
-      required this.status,
       required this.companyProfileModel,
       required this.startShiftModel,
+      required this.errormsg,
       required this.ongoingShiftModel});
 
   List<Object?> get props => [
@@ -29,42 +35,55 @@ class DashboardState {
         selectedIndex,
         started,
         userProfileModel,
-        teamActivityModel,
         status,
+        socketStatus,
+        teamActivityModel,
+        errormsg,
         companyProfileModel,
         startShiftModel,
         ongoingShiftModel
       ];
-  factory DashboardState.initial() {
-    return const DashboardState(
+  factory DashboardState.initial(
+      {required UserProfileModel userProfileModel,
+      required List<TeamActivityModel> teamdata,
+      required OngoingShiftModel ongoingShiftModel,
+      required CompanyProfileModel companyProfileModel,
+      required int index}) {
+    return DashboardState(
         durationInSeconds: 0,
-        selectedIndex: 0,
+        status: DashboardStatus.loaded,
+        socketStatus: SocketStatus.initial,
+        selectedIndex: index,
         started: false,
-        userProfileModel: UserProfileModel(),
-        teamActivityModel: [],
-        status: Status.loading,
-        companyProfileModel: CompanyProfileModel(),
-        startShiftModel: StartShiftModel(),
-        ongoingShiftModel: OngoingShiftModel());
+        errormsg: "",
+        userProfileModel: userProfileModel,
+        teamActivityModel: teamdata,
+        companyProfileModel: companyProfileModel,
+        startShiftModel: const StartShiftModel(),
+        ongoingShiftModel: ongoingShiftModel);
   }
 
   DashboardState copyWith(
       {int? durationInSeconds,
       int? selectedIndex,
       bool? started,
+      DashboardStatus? status,
+      SocketStatus? socketStatus,
       UserProfileModel? userProfileModel,
       List<TeamActivityModel>? teamActivityModel,
-      Status? status,
+      String? errormsg,
       CompanyProfileModel? companyProfileModel,
       StartShiftModel? startShiftModel,
       OngoingShiftModel? ongoingShiftModel}) {
     return DashboardState(
         durationInSeconds: durationInSeconds ?? this.durationInSeconds,
+        status: status ?? this.status,
+        socketStatus: socketStatus ?? this.socketStatus,
         selectedIndex: selectedIndex ?? this.selectedIndex,
         started: started ?? this.started,
+        errormsg: errormsg ?? this.errormsg,
         userProfileModel: userProfileModel ?? this.userProfileModel,
         teamActivityModel: teamActivityModel ?? this.teamActivityModel,
-        status: status ?? this.status,
         companyProfileModel: companyProfileModel ?? this.companyProfileModel,
         startShiftModel: startShiftModel ?? this.startShiftModel,
         ongoingShiftModel: ongoingShiftModel ?? this.ongoingShiftModel);

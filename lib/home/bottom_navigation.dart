@@ -21,31 +21,24 @@ class BottomNavigation extends StatefulWidget {
 
 class _BottomNavigationState extends State<BottomNavigation> {
   int selectedIndex = 0;
-  late DashboardCubit cubit;
   @override
   void initState() {
-    cubit = context.read<DashboardCubit>();
+    print(context.read<DashboardCubit>().state.userProfileModel);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     List<Widget> screen = <Widget>[
-      BlocProvider<DashboardCubit>(
-        create: (context) => DashboardCubit(widget.authToken),
-        child: DashboardScreen(
-          cubit: cubit,
-        ),
+      DashboardScreen(
+        cubit: context.read<DashboardCubit>(),
       ),
       MultiBlocProvider(
           providers: [
-            BlocProvider<DashboardCubit>(
-              create: (context) => DashboardCubit(widget.authToken),
-            ),
             BlocProvider<ShiftsCubit>(create: (context) => ShiftsCubit())
           ],
           child: ShiftsScreen(
-            dcubit: cubit,
+            dcubit: context.read<DashboardCubit>(),
           ))
     ];
     return Scaffold(

@@ -1,4 +1,6 @@
 import 'package:dio/dio.dart';
+import 'package:hourtag/const/api_const.dart';
+import 'package:hourtag/const/common_dio.dart';
 import 'package:hourtag/home/dashboard/model/company_profile/company_profile_model.dart';
 import 'package:hourtag/home/dashboard/model/ongoing_shifts/ongoing_shift_model.dart';
 import 'package:hourtag/home/dashboard/model/start_shift/start_shift_model.dart';
@@ -7,26 +9,11 @@ import 'package:hourtag/home/dashboard/model/user_profile/user_profile_model.dar
 
 class DashboardRepo {
   Future<UserProfileModel> getDashboardData(String authToken) async {
-    Dio dio = Dio();
     try {
-      print(
-        'Bearer $authToken',
-      );
-      Response response = await dio.get(
-        'https://dev-api.app.hourtag.com/user/profile',
-        options: Options(
-          headers: {
-            'Authorization': 'Bearer $authToken',
-          },
-        ),
-      );
+      dio.setOptions(key: "Authorization", value: 'Bearer $authToken');
+      Response response = await dio.get('${ApiContants.baseUrl}/user/profile');
       return UserProfileModel.fromJson(response.data);
-    } on DioException catch (e) {
-      print('Error here 1');
-      print("muji ${e.response?.data.toString()}");
-      throw Exception(e.response?.data.toString());
     } catch (e) {
-      print('Error here 2');
       print(e.toString());
       throw Exception(e.toString());
     }
@@ -34,24 +21,13 @@ class DashboardRepo {
 
   Future<List<TeamActivityModel>> getTeamActivity(
       String authToken, int companyId) async {
-    Dio dio = Dio();
     try {
-      print('https://dev-api.app.hourtag.com/company/team-activity/$companyId');
+      dio.setOptions(key: "Authorization", value: 'Bearer $authToken');
       Response response = await dio.get(
-        'https://dev-api.app.hourtag.com/company/team-activity/$companyId',
-        options: Options(
-          headers: {
-            'Authorization': 'Bearer $authToken',
-          },
-        ),
+        '${ApiContants.baseUrl}/company/team-activity/$companyId',
       );
-
       return List<TeamActivityModel>.from(
           response.data.map((x) => TeamActivityModel.fromJson(x)));
-    } on DioException catch (e) {
-      print(e.message.toString());
-
-      throw Exception(e.message.toString());
     } catch (e) {
       print(e.toString());
       throw Exception(e.toString());
@@ -60,22 +36,13 @@ class DashboardRepo {
 
   Future<CompanyProfileModel> getCompanyProfile(
       String authToken, int companyId) async {
-    Dio dio = Dio();
     try {
-      print('https://dev-api.app.hourtag.com/company/$companyId');
+      dio.setOptions(key: "Authorization", value: 'Bearer $authToken');
       Response response = await dio.get(
-        'https://dev-api.app.hourtag.com/company/$companyId',
-        options: Options(
-          headers: {
-            'Authorization': 'Bearer $authToken',
-          },
-        ),
+        '${ApiContants.baseUrl}/company/$companyId',
       );
 
       return CompanyProfileModel.fromJson(response.data);
-    } on DioException catch (e) {
-      print(e.message.toString());
-      throw Exception(e.message.toString());
     } catch (e) {
       print(e.toString());
       throw Exception(e.toString());
@@ -84,23 +51,12 @@ class DashboardRepo {
 
   Future<OngoingShiftModel> getOngoingShift(
       String authToken, int companyId) async {
-    Dio dio = Dio();
     try {
-      print('https://dev-api.app.hourtag.com/shift/ongoing-shift/$companyId');
+      dio.setOptions(key: "Authorization", value: 'Bearer $authToken');
       Response response = await dio.get(
-        'https://dev-api.app.hourtag.com/shift/ongoing-shift/$companyId',
-        options: Options(
-          headers: {
-            'Authorization': 'Bearer $authToken',
-          },
-        ),
+        '${ApiContants.baseUrl}/shift/ongoing-shift/$companyId',
       );
-      print('hihihihi');
-      print(response.data);
       return OngoingShiftModel.fromJson(response.data);
-    } on DioException catch (e) {
-      print(e.message.toString());
-      throw Exception(e.message.toString());
     } catch (e) {
       print(e.toString());
       throw Exception(e.toString());
@@ -109,61 +65,32 @@ class DashboardRepo {
 
   Future<StartShiftModel> startShift(
       int companyId, int projectId, String authToken) async {
-    Dio dio = Dio();
     try {
-      print({
-        "companyId": companyId,
-        "projectId": projectId,
-        "note": '',
-      });
+      dio.setOptions(key: "Authorization", value: 'Bearer $authToken');
       Response res = await dio.post(
-        'https://dev-api.app.hourtag.com/shift/start',
+        '${ApiContants.baseUrl}/shift/start',
         data: {
           "companyId": companyId,
           "projectId": projectId,
           "note": '',
         },
-        options: Options(
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer $authToken',
-          },
-        ),
       );
-
-      print(res.data);
       return StartShiftModel.fromJson(res.data);
-    } on DioException catch (e) {
-      print('Error here 1');
-      print("error: ${e.response?.data}");
-      throw Exception(e.message);
     } catch (e) {
-      print('Error here 1');
-      print("error: ${e.toString()}");
+      print(e.toString());
       throw Exception(e.toString());
     }
   }
 
   Future<void> stopShift(String note, String authToken) async {
-    Dio dio = Dio();
     try {
+      dio.setOptions(key: "Authorization", value: 'Bearer $authToken');
       Response res = await dio.post(
-        'https://dev-api.app.hourtag.com/shift/end',
+        '${ApiContants.baseUrl}/shift/end',
         data: {
           "note": note,
         },
-        options: Options(
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer $authToken',
-          },
-        ),
       );
-
-      print(res.data);
-    } on DioException catch (e) {
-      print("error: ${e.response?.data}");
-      throw Exception(e.message);
     } catch (e) {
       print("error: ${e.toString()}");
       throw Exception(e.toString());

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hourtag/cubit/cubit/auth_cubit.dart';
 import 'package:hourtag/home/bottom_navigation.dart';
+import 'package:hourtag/home/dashboard/repo/dashboard_repo.dart';
 import 'package:hourtag/login/cubit/login_cubit.dart';
 import 'package:hourtag/login/screen/forget_password.dart';
 import 'package:hourtag/util/color_constant.dart';
@@ -11,6 +12,10 @@ import 'package:hourtag/util/weight_constant.dart';
 import 'package:hourtag/widgets/custom_button.dart';
 
 import '../../home/dashboard/cubit/dashboard_cubit.dart';
+import '../../home/dashboard/model/company_profile/company_profile_model.dart';
+import '../../home/dashboard/model/ongoing_shifts/ongoing_shift_model.dart';
+import '../../home/dashboard/model/team_activity/team_activity_model.dart';
+import '../../home/dashboard/model/user_profile/user_profile_model.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -32,6 +37,7 @@ class _LoginScreenState extends State<LoginScreen> {
     super.initState();
   }
 
+  DashboardRepo repo = DashboardRepo();
   final whiteTextStyle = const TextStyle(color: Colors.white);
 
   @override
@@ -128,13 +134,38 @@ class _LoginScreenState extends State<LoginScreen> {
                           }
 
                           if (result == 1) {
-                            print('auth token here ${authCubit.authToken}');
+                            UserProfileModel data = await repo
+                                .getDashboardData(authCubit.authToken);
+                            List<TeamActivityModel> teamdata =
+                                await repo.getTeamActivity(authCubit.authToken,
+                                    data.selectedCompany?.companyId ?? 0);
+                            OngoingShiftModel ongoingShiftData =
+                                await repo.getOngoingShift(authCubit.authToken,
+                                    data.selectedCompany?.companyId ?? 0);
+                            CompanyProfileModel companyData =
+                                await repo.getCompanyProfile(
+                                    authCubit.authToken,
+                                    data.selectedCompany?.companyId ?? 0);
+                            int index = 0;
+                            if (ongoingShiftData.ongoingShift != null) {
+                              index = companyData.projects!.indexWhere(
+                                  (element) =>
+                                      element.id ==
+                                      ongoingShiftData.ongoingShift!.projectId);
+                            }
+                            // ignore: use_build_context_synchronously
                             Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => BlocProvider(
                                           create: (context) => DashboardCubit(
-                                              authCubit.state.authToken),
+                                              authCubit.state.authToken,
+                                              teamdata: teamdata,
+                                              ongoingShiftModel:
+                                                  ongoingShiftData,
+                                              companyProfileModel: companyData,
+                                              userProfileModel: data,
+                                              index: index),
                                           child: BottomNavigation(
                                               authToken:
                                                   authCubit.state.authToken),
