@@ -24,7 +24,7 @@ late AuthCubit authCubit;
 
 class TimeParts {
   /*
-  blah blah
+  blah bluegit
   blah blah
   */
   String hours = '00';
