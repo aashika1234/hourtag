@@ -10,6 +10,7 @@ import 'package:hourtag/home/dashboard/model/team_activity/team_activity_model.d
 import 'package:hourtag/home/dashboard/model/user_profile/user_profile_model.dart';
 
 import 'package:hourtag/home/dashboard/repo/dashboard_repo.dart';
+
 import 'package:hourtag/login/screen/login_screen.dart';
 import 'package:hourtag/util/color_constant.dart';
 
@@ -24,7 +25,6 @@ class _SplashScreenState extends State<SplashScreen> {
   late AuthCubit cubit;
   Future<void> checkIfAuthenticated() async {
     DashboardRepo repo = DashboardRepo();
-
     if (cubit.state.authToken.isEmpty) {
       Navigator.push(context,
           MaterialPageRoute(builder: (context) => const LoginScreen()));
@@ -34,7 +34,6 @@ class _SplashScreenState extends State<SplashScreen> {
         await repo.getDashboardData(cubit.state.authToken);
         UserProfileModel data =
             await repo.getDashboardData(cubit.state.authToken);
-
         List<TeamActivityModel> teamdata = await repo.getTeamActivity(
             cubit.state.authToken, data.selectedCompany?.companyId ?? 0);
         OngoingShiftModel ongoingShiftData = await repo.getOngoingShift(

@@ -44,7 +44,6 @@ class DashboardRepo {
 
       return CompanyProfileModel.fromJson(response.data);
     } catch (e) {
-      print(e.toString());
       throw Exception(e.toString());
     }
   }
@@ -58,7 +57,6 @@ class DashboardRepo {
       );
       return OngoingShiftModel.fromJson(response.data);
     } catch (e) {
-      print(e.toString());
       throw Exception(e.toString());
     }
   }
@@ -77,7 +75,6 @@ class DashboardRepo {
       );
       return StartShiftModel.fromJson(res.data);
     } catch (e) {
-      print(e.toString());
       throw Exception(e.toString());
     }
   }
@@ -85,12 +82,24 @@ class DashboardRepo {
   Future<void> stopShift(String note, String authToken) async {
     try {
       dio.setOptions(key: "Authorization", value: 'Bearer $authToken');
-      Response res = await dio.post(
+      await dio.post(
         '${ApiContants.baseUrl}/shift/end',
         data: {
           "note": note,
         },
       );
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  Future<void> deleteShift(int shiftId, String authToken) async {
+    try {
+      dio.setOptions(key: "Authorization", value: 'Bearer $authToken');
+      await dio.delete(
+        '${ApiContants.baseUrl}/shift/$shiftId',
+      );
+      print('Deleted successfully');
     } catch (e) {
       print("error: ${e.toString()}");
       throw Exception(e.toString());

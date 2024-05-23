@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hourtag/home/dashboard/cubit/dashboard_cubit.dart';
 import 'package:hourtag/home/shifts/cubit/manual_shift_date_picker_cubit.dart';
 import 'package:hourtag/home/shifts/cubit/shifts_cubit.dart';
+import 'package:hourtag/home/shifts/model/shift_activity/shift_activity_model.dart';
 
 import 'package:hourtag/util/color_constant.dart';
 import 'package:hourtag/util/global_style.dart';
@@ -20,15 +21,22 @@ import 'package:hourtag/widgets/shifts/shift_detail.dart';
 import '../../../util/functions.dart';
 
 class ShiftsScreen extends StatefulWidget {
-  const ShiftsScreen({super.key, required this.dcubit});
+  const ShiftsScreen(
+      {super.key, required this.dcubit, required this.authToken});
   final DashboardCubit dcubit;
+  final String authToken;
   @override
   State<ShiftsScreen> createState() => _ShiftsScreenState();
 }
 
 class _ShiftsScreenState extends State<ShiftsScreen> {
+  late ShiftsCubit shiftsCubit;
   @override
   void initState() {
+    shiftsCubit = context.read<ShiftsCubit>();
+
+    shiftsCubit
+        .getShiftActivityData(widget.dcubit.state.companyProfileModel.id ?? 0);
     super.initState();
   }
 
@@ -300,30 +308,63 @@ class _ShiftsScreenState extends State<ShiftsScreen> {
                 const SizedBox(
                   height: 16,
                 ),
-                ActivityCart(
-                    subHeadingStyle: AppStyles.headingStyle,
-                    period: 'Today',
-                    date: 'Feb 17',
-                    hour: '4',
-                    minute: '38'),
-                const SizedBox(
-                  height: 8,
+                BlocBuilder<ShiftsCubit, ShiftsState>(
+                  builder: (context, state) {
+                    ThisMonth today = state.shiftActivityModel?.today ??
+                        const ThisMonth(hours: 0, minutes: 0, seconds: 0);
+                    ThisMonth weekly = state.shiftActivityModel?.thisWeek ??
+                        const ThisMonth(hours: 0, minutes: 0, seconds: 0);
+                    ThisMonth monthly = state.shiftActivityModel?.thisMonth ??
+                        const ThisMonth(hours: 0, minutes: 0, seconds: 0);
+                    DateTime currentDate = DateTime.now();
+
+                    DateTime calculateWeekStart() {
+                      DateTime now = DateTime.now();
+                      int weekday = now.weekday;
+                      int diff = weekday - 1;
+                      if (diff == 0) {
+                        return now;
+                      } else {
+                        DateTime weekStart = now.subtract(Duration(days: diff));
+                        return weekStart;
+                      }
+                    }
+
+                    DateTime weekStart = calculateWeekStart();
+                    DateTime monthStart =
+                        currentDate.subtract(const Duration(days: 30));
+                    return Column(
+                      children: [
+                        ActivityCart(
+                            subHeadingStyle: AppStyles.headingStyle,
+                            period: 'Today',
+                            date:
+                                '${Func.extractMonth(currentDate.month)} ${currentDate.day}',
+                            hour: today.hours.toString(),
+                            minute: today.minutes.toString()),
+                        const SizedBox(
+                          height: 8,
+                        ),
+                        ActivityCart(
+                            subHeadingStyle: AppStyles.headingStyle,
+                            period: 'Weekly',
+                            date:
+                                '${Func.extractMonth(weekStart.month)} ${weekStart.day} - ${Func.extractMonth(currentDate.month)} ${currentDate.day}',
+                            hour: weekly.hours.toString(),
+                            minute: weekly.minutes.toString()),
+                        const SizedBox(
+                          height: 8,
+                        ),
+                        ActivityCart(
+                            subHeadingStyle: AppStyles.headingStyle,
+                            period: 'Monthly',
+                            date: 'Feb 01-Mar 01)',
+                            hour: monthly.hours.toString(),
+                            minute: monthly.minutes.toString())
+                      ],
+                    );
+                  },
                 ),
-                ActivityCart(
-                    subHeadingStyle: AppStyles.headingStyle,
-                    period: 'Weekly',
-                    date: '(Feb 17-Mar 03)',
-                    hour: '23',
-                    minute: '30'),
-                const SizedBox(
-                  height: 8,
-                ),
-                ActivityCart(
-                    subHeadingStyle: AppStyles.headingStyle,
-                    period: 'Monthly',
-                    date: 'Feb 01-Mar 01)',
-                    hour: '40',
-                    minute: '30'),
                 const SizedBox(
                   height: 56,
                 ),
@@ -666,34 +707,104 @@ class _ShiftsScreenState extends State<ShiftsScreen> {
                 BlocBuilder<ShiftsCubit, ShiftsState>(
                   builder: (context, state) {
                     return state.selectedIndex == 0
-                        ? ListView.separated(
-                            physics: const NeverScrollableScrollPhysics(),
-                            shrinkWrap: true,
-                            itemBuilder: (context, ind) {
-                              return ShiftDetail(
-                                  color: ColorConstant.borderFillCOlor,
-                                  cubit: widget.dcubit);
+                        ? BlocBuilder<DashboardCubit, DashboardState>(
+                            bloc: widget.dcubit,
+                            builder: (context, state) {
+                              return ListView.separated(
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  shrinkWrap: true,
+                                  itemBuilder: (context, ind) {
+                                    return ShiftDetail(
+                                      shift: state
+                                          .ongoingShiftModel.todaysShifts![ind],
+                                      color: ColorConstant.borderFillCOlor,
+                                    );
+                                  },
+                                  separatorBuilder: (context, index) {
+                                    return const SizedBox(
+                                      height: 8,
+                                    );
+                                  },
+                                  itemCount: state.ongoingShiftModel
+                                          .todaysShifts?.length ??
+                                      0);
                             },
-                            separatorBuilder: (context, index) {
-                              return const SizedBox(
-                                height: 8,
-                              );
-                            },
-                            itemCount: 3)
-                        : ListView.separated(
-                            physics: const NeverScrollableScrollPhysics(),
-                            shrinkWrap: true,
-                            itemBuilder: (context, ind) {
-                              return PastShiftWidget(
-                                cubit: widget.dcubit,
-                              );
-                            },
-                            separatorBuilder: (context, index) {
-                              return const SizedBox(
-                                height: 8,
-                              );
-                            },
-                            itemCount: 3);
+                          )
+                        : Column(
+                            children: [
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              Row(
+                                children: [
+                                  Container(
+                                    padding:
+                                        const EdgeInsetsDirectional.symmetric(
+                                            vertical: 10, horizontal: 16),
+                                    decoration: BoxDecoration(
+                                        border: Border.all(
+                                            color: ColorConstant.borderGrey),
+                                        borderRadius:
+                                            BorderRadius.circular(12)),
+                                    child: Text(
+                                      'May 14',
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeightConstant.bold,
+                                          color: ColorConstant.textGrey2),
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  Text(
+                                    'to',
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeightConstant.bold,
+                                        color: ColorConstant.textGrey2),
+                                  ),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  Container(
+                                    padding:
+                                        const EdgeInsetsDirectional.symmetric(
+                                            vertical: 10, horizontal: 16),
+                                    decoration: BoxDecoration(
+                                        border: Border.all(
+                                            color: ColorConstant.borderGrey),
+                                        borderRadius:
+                                            BorderRadius.circular(12)),
+                                    child: Text(
+                                      'May 14',
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeightConstant.bold,
+                                          color: ColorConstant.textGrey2),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 15,
+                              ),
+                              ListView.separated(
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  shrinkWrap: true,
+                                  itemBuilder: (context, ind) {
+                                    return PastShiftWidget(
+                                      cubit: widget.dcubit,
+                                    );
+                                  },
+                                  separatorBuilder: (context, index) {
+                                    return const SizedBox(
+                                      height: 8,
+                                    );
+                                  },
+                                  itemCount: 3),
+                            ],
+                          );
                   },
                 ),
                 const SizedBox(

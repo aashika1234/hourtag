@@ -58,7 +58,7 @@ class DashboardCubit extends Cubit<DashboardState> {
         emit(state.copyWith(socketStatus: SocketStatus.disconnected));
       });
 
-      socket.on("SHIFT_HAS_STARTED", (data) {
+      socket.on("SHIFT_HAS_STARTED", (data) async {
         Shift ongoingShift = Shift.fromJson(data['ongoingShift']);
         int index = state.companyProfileModel.projects!
             .indexWhere((element) => element.id == ongoingShift.projectId);
@@ -66,7 +66,8 @@ class DashboardCubit extends Cubit<DashboardState> {
             ongoingShiftModel: OngoingShiftModel(ongoingShift: ongoingShift),
             selectedIndex: index));
 
-        checkEarlyTimerStart(index);
+        await checkEarlyTimerStart(index);
+        emit(state.copyWith(status: DashboardStatus.loaded));
       });
 
       socket.on("SHIFT_HAS_ENDED", (_) => forceStopTimer());
@@ -99,6 +100,7 @@ class DashboardCubit extends Cubit<DashboardState> {
     // int second;
     // StartShiftModel data;
     // data =
+    emit(state.copyWith(status: DashboardStatus.loading));
     await repo.startShift(
         state.userProfileModel.selectedCompany?.companyId ?? 0,
         state.companyProfileModel.projects?[state.selectedIndex].id ?? 0,
@@ -112,8 +114,9 @@ class DashboardCubit extends Cubit<DashboardState> {
     // });
   }
 
-  void checkEarlyTimerStart(int index) async {
+  Future<void> checkEarlyTimerStart(int index) async {
     if (state.ongoingShiftModel.ongoingShift != null) {
+      toogleStart(true);
       controller.scrollToIndex(index, preferPosition: AutoScrollPosition.begin);
       _timer?.cancel();
 
@@ -123,7 +126,6 @@ class DashboardCubit extends Cubit<DashboardState> {
       _timer = Timer.periodic(const Duration(seconds: 1), (Timer timer) {
         second++;
         emit(state.copyWith(durationInSeconds: second));
-        toogleStart(true);
       });
     }
   }
@@ -189,5 +191,17 @@ class DashboardCubit extends Cubit<DashboardState> {
       ongoingShiftModel: ongoingShiftData,
       companyProfileModel: companyData,
     ));
+  }
+
+  Future<void> delete(int shiftId) async {
+    await repo.deleteShift(shiftId, authToken);
+    forceStopTimer();
+  }
+
+  String returnUserProjectFromProjectID(int companyId) {
+    return (state.companyProfileModel.projects ?? [])
+            .firstWhere((element) => element.id == companyId)
+            .name ??
+        "";
   }
 }

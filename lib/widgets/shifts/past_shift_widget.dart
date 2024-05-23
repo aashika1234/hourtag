@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_svg/svg.dart';
 import 'package:hourtag/home/dashboard/cubit/dashboard_cubit.dart';
+import 'package:hourtag/home/dashboard/model/ongoing_shifts/ongoing_shift_model.dart';
 
 import 'package:hourtag/util/color_constant.dart';
 import 'package:hourtag/util/weight_constant.dart';
@@ -106,7 +107,7 @@ class PastShiftWidget extends StatelessWidget {
                     padding: const EdgeInsets.only(right: 12, left: 12),
                     child: ShiftDetail(
                       color: Colors.black,
-                      cubit: cubit,
+                      shift: Shift(),
                     ),
                   );
                 },

@@ -3,20 +3,31 @@ part of 'shifts_cubit.dart';
 
 class ShiftsState {
   final int selectedIndex;
-  ShiftsState({
-    required this.selectedIndex,
-  });
-  List<Object?> get props => [selectedIndex];
-  factory ShiftsState.initial() {
+  final ShiftActivityModel? shiftActivityModel;
+  final String authToken;
+  final PastShiftModel pastShiftModel;
+  ShiftsState(
+      {required this.selectedIndex,
+      required this.shiftActivityModel,
+      required this.authToken,
+      required this.pastShiftModel});
+  List<Object?> get props => [selectedIndex, shiftActivityModel, authToken];
+  factory ShiftsState.initial({required String authToken}) {
     return ShiftsState(
-      selectedIndex: 0,
-    );
+        selectedIndex: 0,
+        shiftActivityModel: const ShiftActivityModel(),
+        authToken: authToken,
+        pastShiftModel: const PastShiftModel());
   }
-  ShiftsState copyWith({
-    int? selectedIndex,
-  }) {
+  ShiftsState copyWith(
+      {int? selectedIndex,
+      ShiftActivityModel? shiftActivityModel,
+      String? authToken,
+      PastShiftModel? pastShiftModel}) {
     return ShiftsState(
-      selectedIndex: selectedIndex ?? this.selectedIndex,
-    );
+        selectedIndex: selectedIndex ?? this.selectedIndex,
+        shiftActivityModel: shiftActivityModel ?? this.shiftActivityModel,
+        authToken: authToken ?? this.authToken,
+        pastShiftModel: pastShiftModel ?? this.pastShiftModel);
   }
 }

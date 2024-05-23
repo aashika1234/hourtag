@@ -18,7 +18,6 @@ class LoginRepo {
       await prefs.setString('access_token', accessToken);
       return accessToken;
     } catch (e) {
-      print(e.toString());
       throw Exception(e.toString());
     }
   }

@@ -44,219 +44,230 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return BlocProvider.value(
       value: cubit,
-      child: Scaffold(
-        backgroundColor: ColorConstant.backgroundColor,
-        body: SafeArea(
-            child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 25),
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 120, vertical: 40),
-              child: Column(
+      child: BlocListener<LoginCubit, LoginState>(
+        listener: (context, state) {
+          if (state.status == Status.error) {
+            final snackBar = SnackBar(
+              backgroundColor: ColorConstant.red,
+              content: Text(
+                state.error.toString(),
+                textAlign: TextAlign.center,
+                style: const TextStyle(color: Colors.white),
+              ),
+              behavior: SnackBarBehavior.floating,
+            );
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          }
+        },
+        listenWhen: (previous, current) {
+          return current.status != previous.status;
+        },
+        child: Scaffold(
+          backgroundColor: ColorConstant.backgroundColor,
+          body: SafeArea(
+              child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 25),
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 120, vertical: 40),
+                child: Column(
+                  children: [
+                    SvgPicture.asset('assets/icons/logo.svg'),
+                    const SizedBox(
+                      height: 48,
+                    ),
+                    Text(
+                      'Log into',
+                      style: TextStyle(
+                          fontSize: 24, color: ColorConstant.textGrey2),
+                    ),
+                    const Text(
+                      'HourTag',
+                      style: TextStyle(fontSize: 24, color: Colors.white),
+                    )
+                  ],
+                ),
+              ),
+              const SizedBox(
+                height: 30,
+              ),
+              TextField(
+                  controller: emailController,
+                  style: whiteTextStyle,
+                  decoration: InputDecoration(
+                      hintText: 'Email address',
+                      hintStyle: AppStyles.borderGreyTextStyle,
+                      filled: true,
+                      fillColor: ColorConstant.borderFillCOlor,
+                      disabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12)),
+                      enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12)),
+                      focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12)))),
+              const SizedBox(
+                height: 10,
+              ),
+              TextField(
+                  controller: passwordController,
+                  style: whiteTextStyle,
+                  obscureText: true,
+                  decoration: InputDecoration(
+                      hintText: 'Password',
+                      hintStyle: AppStyles.borderGreyTextStyle,
+                      filled: true,
+                      fillColor: ColorConstant.borderFillCOlor,
+                      disabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12)),
+                      enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12)),
+                      focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12)))),
+              const SizedBox(
+                height: 10,
+              ),
+              BlocBuilder<LoginCubit, LoginState>(
+                builder: (context, state) {
+                  return state.status == Status.loading
+                      ? Container(
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          decoration: BoxDecoration(
+                              color: ColorConstant.primaryColor,
+                              borderRadius: BorderRadius.circular(12)),
+                          child: Center(
+                              child: CircularProgressIndicator(
+                            color: ColorConstant.backgroundColor,
+                          )),
+                        )
+                      : CustomnButton(
+                          text: 'Log in',
+                          onTap: () async {
+                            int result = await context.read<LoginCubit>().login(
+                                emailController.text, passwordController.text);
+
+                            if (!context.mounted) {
+                              return;
+                            }
+
+                            if (result == 1) {
+                              UserProfileModel data = await repo
+                                  .getDashboardData(authCubit.state.authToken);
+                              List<TeamActivityModel> teamdata =
+                                  await repo.getTeamActivity(
+                                      authCubit.state.authToken,
+                                      data.selectedCompany?.companyId ?? 0);
+                              OngoingShiftModel ongoingShiftData =
+                                  await repo.getOngoingShift(
+                                      authCubit.state.authToken,
+                                      data.selectedCompany?.companyId ?? 0);
+                              CompanyProfileModel companyData =
+                                  await repo.getCompanyProfile(
+                                      authCubit.state.authToken,
+                                      data.selectedCompany?.companyId ?? 0);
+                              int index = 0;
+                              if (ongoingShiftData.ongoingShift != null) {
+                                index = companyData.projects!.indexWhere(
+                                    (element) =>
+                                        element.id ==
+                                        ongoingShiftData
+                                            .ongoingShift!.projectId);
+                              }
+                              // ignore: use_build_context_synchronously
+                              Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => BlocProvider(
+                                            create: (context) => DashboardCubit(
+                                                authCubit.state.authToken,
+                                                teamdata: teamdata,
+                                                ongoingShiftModel:
+                                                    ongoingShiftData,
+                                                companyProfileModel:
+                                                    companyData,
+                                                userProfileModel: data,
+                                                index: index),
+                                            child: BottomNavigation(
+                                                authToken:
+                                                    authCubit.state.authToken),
+                                          )));
+                            }
+                          },
+                        );
+                },
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              InkWell(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const ForgetPassword()));
+                },
+                child: Text(
+                  'Forget password?',
+                  style: TextStyle(
+                      color: ColorConstant.blue,
+                      fontSize: 16,
+                      fontWeight: FontWeightConstant.extraBold),
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Row(
                 children: [
-                  SvgPicture.asset('assets/icons/logo.svg'),
+                  Expanded(
+                    child: Divider(
+                      color: ColorConstant.textGrey,
+                      thickness: 2,
+                    ),
+                  ),
                   const SizedBox(
-                    height: 48,
+                    width: 24,
                   ),
                   Text(
-                    'Log into',
-                    style:
-                        TextStyle(fontSize: 24, color: ColorConstant.textGrey2),
+                    'OR',
+                    style: whiteTextStyle,
                   ),
-                  const Text(
-                    'HourTag',
-                    style: TextStyle(fontSize: 24, color: Colors.white),
+                  const SizedBox(
+                    width: 24,
+                  ),
+                  Expanded(
+                    child: Divider(
+                      color: ColorConstant.textGrey,
+                      thickness: 2,
+                    ),
                   )
                 ],
               ),
-            ),
-            const SizedBox(
-              height: 30,
-            ),
-            TextField(
-                controller: emailController,
-                style: whiteTextStyle,
-                decoration: InputDecoration(
-                    hintText: 'Email address',
-                    hintStyle: AppStyles.borderGreyTextStyle,
-                    filled: true,
-                    fillColor: ColorConstant.borderFillCOlor,
-                    disabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12)),
-                    enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12)),
-                    focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12)))),
-            const SizedBox(
-              height: 10,
-            ),
-            TextField(
-                controller: passwordController,
-                style: whiteTextStyle,
-                obscureText: true,
-                decoration: InputDecoration(
-                    hintText: 'Password',
-                    hintStyle: AppStyles.borderGreyTextStyle,
-                    filled: true,
-                    fillColor: ColorConstant.borderFillCOlor,
-                    disabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12)),
-                    enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12)),
-                    focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12)))),
-            const SizedBox(
-              height: 10,
-            ),
-            BlocBuilder<LoginCubit, LoginState>(
-              builder: (context, state) {
-                return state.status == Status.loading
-                    ? Container(
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        decoration: BoxDecoration(
-                            color: ColorConstant.primaryColor,
-                            borderRadius: BorderRadius.circular(12)),
-                        child: Center(
-                            child: CircularProgressIndicator(
-                          color: ColorConstant.backgroundColor,
-                        )),
-                      )
-                    : CustomnButton(
-                        text: 'Log in',
-                        onTap: () async {
-                          int result = await context.read<LoginCubit>().login(
-                              emailController.text, passwordController.text);
-
-                          if (!context.mounted) {
-                            return;
-                          }
-
-                          if (result == 1) {
-                            UserProfileModel data = await repo
-                                .getDashboardData(authCubit.authToken);
-                            List<TeamActivityModel> teamdata =
-                                await repo.getTeamActivity(authCubit.authToken,
-                                    data.selectedCompany?.companyId ?? 0);
-                            OngoingShiftModel ongoingShiftData =
-                                await repo.getOngoingShift(authCubit.authToken,
-                                    data.selectedCompany?.companyId ?? 0);
-                            CompanyProfileModel companyData =
-                                await repo.getCompanyProfile(
-                                    authCubit.authToken,
-                                    data.selectedCompany?.companyId ?? 0);
-                            int index = 0;
-                            if (ongoingShiftData.ongoingShift != null) {
-                              index = companyData.projects!.indexWhere(
-                                  (element) =>
-                                      element.id ==
-                                      ongoingShiftData.ongoingShift!.projectId);
-                            }
-                            // ignore: use_build_context_synchronously
-                            Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => BlocProvider(
-                                          create: (context) => DashboardCubit(
-                                              authCubit.state.authToken,
-                                              teamdata: teamdata,
-                                              ongoingShiftModel:
-                                                  ongoingShiftData,
-                                              companyProfileModel: companyData,
-                                              userProfileModel: data,
-                                              index: index),
-                                          child: BottomNavigation(
-                                              authToken:
-                                                  authCubit.state.authToken),
-                                        )));
-                          } else {
-                            final snackBar = SnackBar(
-                              backgroundColor: ColorConstant.red,
-                              content: const Text(
-                                'Invalid credentials',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(color: Colors.white),
-                              ),
-                              behavior: SnackBarBehavior.floating,
-                            );
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(snackBar);
-                          }
-                        },
-                      );
-              },
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            InkWell(
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const ForgetPassword()));
-              },
-              child: Text(
-                'Forget password?',
-                style: TextStyle(
-                    color: ColorConstant.blue,
-                    fontSize: 16,
-                    fontWeight: FontWeightConstant.extraBold),
+              const SizedBox(
+                height: 10,
               ),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            Row(
-              children: [
-                Expanded(
-                  child: Divider(
-                    color: ColorConstant.textGrey,
-                    thickness: 2,
+              BorderedButton(
+                text: 'Sign in with Google',
+                onTap: () {},
+              ),
+              const Spacer(),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Text(
+                    "Say hi at hello@hourtag.com",
+                    style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeightConstant.bold,
+                        color: ColorConstant.textGrey2),
                   ),
                 ),
-                const SizedBox(
-                  width: 24,
-                ),
-                Text(
-                  'OR',
-                  style: whiteTextStyle,
-                ),
-                const SizedBox(
-                  width: 24,
-                ),
-                Expanded(
-                  child: Divider(
-                    color: ColorConstant.textGrey,
-                    thickness: 2,
-                  ),
-                )
-              ],
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            BorderedButton(
-              text: 'Sign in with Google',
-              onTap: () {},
-            ),
-            const Spacer(),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 10),
-              child: Align(
-                alignment: Alignment.bottomCenter,
-                child: Text(
-                  "Say hi at hello@hourtag.com",
-                  style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeightConstant.bold,
-                      color: ColorConstant.textGrey2),
-                ),
-              ),
-            )
-          ]),
-        )),
+              )
+            ]),
+          )),
+        ),
       ),
     );
   }
