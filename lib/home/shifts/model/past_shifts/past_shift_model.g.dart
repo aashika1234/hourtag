@@ -64,12 +64,12 @@ Map<String, dynamic> _$$ProjectImplToJson(_$ProjectImpl instance) =>
 
 _$ShiftsByWeekImpl _$$ShiftsByWeekImplFromJson(Map<String, dynamic> json) =>
     _$ShiftsByWeekImpl(
-      weekStart: json['weekStart'] == null
+      weekStart: json['week_start'] == null
           ? null
-          : DateTime.parse(json['weekStart'] as String),
-      weekEnd: json['weekEnd'] == null
+          : DateTime.parse(json['week_start'] as String),
+      weekEnd: json['week_end'] == null
           ? null
-          : DateTime.parse(json['weekEnd'] as String),
+          : DateTime.parse(json['week_end'] as String),
       shiftsByDay: (json['shiftsByDay'] as List<dynamic>?)
           ?.map((e) => ShiftsByDay.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -80,23 +80,23 @@ _$ShiftsByWeekImpl _$$ShiftsByWeekImplFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$$ShiftsByWeekImplToJson(_$ShiftsByWeekImpl instance) =>
     <String, dynamic>{
-      'weekStart': instance.weekStart?.toIso8601String(),
-      'weekEnd': instance.weekEnd?.toIso8601String(),
+      'week_start': instance.weekStart?.toIso8601String(),
+      'week_end': instance.weekEnd?.toIso8601String(),
       'shiftsByDay': instance.shiftsByDay,
       'totalWeekTime': instance.totalWeekTime,
     };
 
 _$ShiftsByDayImpl _$$ShiftsByDayImplFromJson(Map<String, dynamic> json) =>
     _$ShiftsByDayImpl(
-      dayStart: json['dayStart'] == null
+      dayStart: json['day_start'] == null
           ? null
-          : DateTime.parse(json['dayStart'] as String),
+          : DateTime.parse(json['day_start'] as String),
       totalDayTime: json['totalDayTime'] == null
           ? null
           : Time.fromJson(json['totalDayTime'] as Map<String, dynamic>),
-      dayEnd: json['dayEnd'] == null
+      dayEnd: json['day_end'] == null
           ? null
-          : DateTime.parse(json['dayEnd'] as String),
+          : DateTime.parse(json['day_end'] as String),
       shifts: (json['shifts'] as List<dynamic>?)
           ?.map((e) => Shift.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -104,59 +104,10 @@ _$ShiftsByDayImpl _$$ShiftsByDayImplFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$$ShiftsByDayImplToJson(_$ShiftsByDayImpl instance) =>
     <String, dynamic>{
-      'dayStart': instance.dayStart?.toIso8601String(),
+      'day_start': instance.dayStart?.toIso8601String(),
       'totalDayTime': instance.totalDayTime,
-      'dayEnd': instance.dayEnd?.toIso8601String(),
+      'day_end': instance.dayEnd?.toIso8601String(),
       'shifts': instance.shifts,
-    };
-
-_$ShiftImpl _$$ShiftImplFromJson(Map<String, dynamic> json) => _$ShiftImpl(
-      id: json['id'] as int?,
-      startTime: json['startTime'] == null
-          ? null
-          : DateTime.parse(json['startTime'] as String),
-      startTimeInTimezone: json['startTimeInTimezone'] == null
-          ? null
-          : DateTime.parse(json['startTimeInTimezone'] as String),
-      endTime: json['endTime'] == null
-          ? null
-          : DateTime.parse(json['endTime'] as String),
-      endTimeInTimezone: json['endTimeInTimezone'] == null
-          ? null
-          : DateTime.parse(json['endTimeInTimezone'] as String),
-      note: json['note'] as String?,
-      shiftStatus: json['shiftStatus'] as String?,
-      shiftTimezone: json['shiftTimezone'] as String?,
-      userId: json['userId'] as int?,
-      companyId: json['companyId'] as int?,
-      projectId: json['projectId'] as int?,
-      project: json['project'] == null
-          ? null
-          : Project.fromJson(json['project'] as Map<String, dynamic>),
-      user: json['user'] == null
-          ? null
-          : ShiftUser.fromJson(json['user'] as Map<String, dynamic>),
-      totalShiftTime: json['totalShiftTime'] == null
-          ? null
-          : Time.fromJson(json['totalShiftTime'] as Map<String, dynamic>),
-    );
-
-Map<String, dynamic> _$$ShiftImplToJson(_$ShiftImpl instance) =>
-    <String, dynamic>{
-      'id': instance.id,
-      'startTime': instance.startTime?.toIso8601String(),
-      'startTimeInTimezone': instance.startTimeInTimezone?.toIso8601String(),
-      'endTime': instance.endTime?.toIso8601String(),
-      'endTimeInTimezone': instance.endTimeInTimezone?.toIso8601String(),
-      'note': instance.note,
-      'shiftStatus': instance.shiftStatus,
-      'shiftTimezone': instance.shiftTimezone,
-      'userId': instance.userId,
-      'companyId': instance.companyId,
-      'projectId': instance.projectId,
-      'project': instance.project,
-      'user': instance.user,
-      'totalShiftTime': instance.totalShiftTime,
     };
 
 _$ShiftUserImpl _$$ShiftUserImplFromJson(Map<String, dynamic> json) =>
@@ -164,7 +115,7 @@ _$ShiftUserImpl _$$ShiftUserImplFromJson(Map<String, dynamic> json) =>
       id: json['id'] as int?,
       name: json['name'] as String?,
       email: json['email'] as String?,
-      profileImage: json['profileImage'],
+      profileImage: json['profile_image'] as String?,
     );
 
 Map<String, dynamic> _$$ShiftUserImplToJson(_$ShiftUserImpl instance) =>
@@ -172,45 +123,51 @@ Map<String, dynamic> _$$ShiftUserImplToJson(_$ShiftUserImpl instance) =>
       'id': instance.id,
       'name': instance.name,
       'email': instance.email,
-      'profileImage': instance.profileImage,
+      'profile_image': instance.profileImage,
     };
 
 _$PastShiftModelUserImpl _$$PastShiftModelUserImplFromJson(
         Map<String, dynamic> json) =>
     _$PastShiftModelUserImpl(
       id: json['id'] as int?,
-      createdAt: json['createdAt'] == null
+      createdAt: json['created_at'] == null
           ? null
-          : DateTime.parse(json['createdAt'] as String),
-      updatedAt: json['updatedAt'] == null
+          : DateTime.parse(json['created_at'] as String),
+      updatedAt: json['updated_at'] == null
           ? null
-          : DateTime.parse(json['updatedAt'] as String),
-      deletedAt: json['deletedAt'],
+          : DateTime.parse(json['updated_at'] as String),
+      deletedAt: json['deleted_at'] == null
+          ? null
+          : DateTime.parse(json['deleted_at'] as String),
       name: json['name'] as String?,
       email: json['email'] as String?,
-      previousEmail: json['previousEmail'],
-      profileImage: json['profileImage'],
-      phone: json['phone'],
-      isVerified: json['isVerified'] as bool?,
-      isUserOnboardingCompleted: json['isUserOnboardingCompleted'] as bool?,
-      onboardingStep: json['onboardingStep'],
-      verificationEmailLastSentOn: json['verificationEmailLastSentOn'],
+      previousEmail: json['previous_email'] as String?,
+      profileImage: json['profile_image'] as String?,
+      phone: json['phone'] as String?,
+      isVerified: json['is_verified'] as bool?,
+      isUserOnboardingCompleted: json['is_user_onboarding_completed'] as bool?,
+      onboardingStep: json['onboarding_step'] as String?,
+      verificationEmailLastSentOn: json['verification_email_last_sent_on'] ==
+              null
+          ? null
+          : DateTime.parse(json['verification_email_last_sent_on'] as String),
     );
 
 Map<String, dynamic> _$$PastShiftModelUserImplToJson(
         _$PastShiftModelUserImpl instance) =>
     <String, dynamic>{
       'id': instance.id,
-      'createdAt': instance.createdAt?.toIso8601String(),
-      'updatedAt': instance.updatedAt?.toIso8601String(),
-      'deletedAt': instance.deletedAt,
+      'created_at': instance.createdAt?.toIso8601String(),
+      'updated_at': instance.updatedAt?.toIso8601String(),
+      'deleted_at': instance.deletedAt?.toIso8601String(),
       'name': instance.name,
       'email': instance.email,
-      'previousEmail': instance.previousEmail,
-      'profileImage': instance.profileImage,
+      'previous_email': instance.previousEmail,
+      'profile_image': instance.profileImage,
       'phone': instance.phone,
-      'isVerified': instance.isVerified,
-      'isUserOnboardingCompleted': instance.isUserOnboardingCompleted,
-      'onboardingStep': instance.onboardingStep,
-      'verificationEmailLastSentOn': instance.verificationEmailLastSentOn,
+      'is_verified': instance.isVerified,
+      'is_user_onboarding_completed': instance.isUserOnboardingCompleted,
+      'onboarding_step': instance.onboardingStep,
+      'verification_email_last_sent_on':
+          instance.verificationEmailLastSentOn?.toIso8601String(),
     };

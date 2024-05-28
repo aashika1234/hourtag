@@ -8,6 +8,7 @@ import 'package:hourtag/home/dashboard/model/company_profile/company_profile_mod
 import 'package:hourtag/home/dashboard/model/ongoing_shifts/ongoing_shift_model.dart';
 import 'package:hourtag/home/dashboard/model/team_activity/team_activity_model.dart';
 import 'package:hourtag/home/dashboard/model/user_profile/user_profile_model.dart';
+import 'package:hourtag/home/dashboard/model/weekly_shift/weekly_shift_model.dart';
 
 import 'package:hourtag/home/dashboard/repo/dashboard_repo.dart';
 
@@ -40,6 +41,8 @@ class _SplashScreenState extends State<SplashScreen> {
             cubit.state.authToken, data.selectedCompany?.companyId ?? 0);
         CompanyProfileModel companyData = await repo.getCompanyProfile(
             cubit.state.authToken, data.selectedCompany?.companyId ?? 0);
+        WeeklyShiftModel weeklyShiftModel = await repo.getWeeklyShift(
+            cubit.state.authToken, data.selectedCompany?.companyId ?? 0);
         int index = 0;
         if (ongoingShiftData.ongoingShift != null) {
           index = companyData.projects!.indexWhere((element) =>
@@ -56,6 +59,7 @@ class _SplashScreenState extends State<SplashScreen> {
                     create: (context) => DashboardCubit(cubit.state.authToken,
                         index: index,
                         teamdata: teamdata,
+                        weeklyShiftModel: weeklyShiftModel,
                         ongoingShiftModel: ongoingShiftData,
                         companyProfileModel: companyData,
                         userProfileModel: data),

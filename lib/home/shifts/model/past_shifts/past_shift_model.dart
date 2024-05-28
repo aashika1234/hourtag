@@ -5,6 +5,8 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'dart:convert';
 
+import 'package:hourtag/home/dashboard/model/ongoing_shifts/ongoing_shift_model.dart';
+
 part 'past_shift_model.freezed.dart';
 part 'past_shift_model.g.dart';
 
@@ -53,8 +55,8 @@ class Project with _$Project {
 @freezed
 class ShiftsByWeek with _$ShiftsByWeek {
   const factory ShiftsByWeek({
-    DateTime? weekStart,
-    DateTime? weekEnd,
+    @JsonKey(name: 'week_start') DateTime? weekStart,
+    @JsonKey(name: 'week_end') DateTime? weekEnd,
     List<ShiftsByDay>? shiftsByDay,
     Time? totalWeekTime,
   }) = _ShiftsByWeek;
@@ -66,9 +68,9 @@ class ShiftsByWeek with _$ShiftsByWeek {
 @freezed
 class ShiftsByDay with _$ShiftsByDay {
   const factory ShiftsByDay({
-    DateTime? dayStart,
+    @JsonKey(name: 'day_start') DateTime? dayStart,
     Time? totalDayTime,
-    DateTime? dayEnd,
+    @JsonKey(name: 'day_end') DateTime? dayEnd,
     List<Shift>? shifts,
   }) = _ShiftsByDay;
 
@@ -77,34 +79,12 @@ class ShiftsByDay with _$ShiftsByDay {
 }
 
 @freezed
-class Shift with _$Shift {
-  const factory Shift({
-    int? id,
-    DateTime? startTime,
-    DateTime? startTimeInTimezone,
-    DateTime? endTime,
-    DateTime? endTimeInTimezone,
-    String? note,
-    String? shiftStatus,
-    String? shiftTimezone,
-    int? userId,
-    int? companyId,
-    int? projectId,
-    Project? project,
-    ShiftUser? user,
-    Time? totalShiftTime,
-  }) = _Shift;
-
-  factory Shift.fromJson(Map<String, dynamic> json) => _$ShiftFromJson(json);
-}
-
-@freezed
 class ShiftUser with _$ShiftUser {
   const factory ShiftUser({
     int? id,
     String? name,
     String? email,
-    dynamic profileImage,
+    @JsonKey(name: 'profile_image') String? profileImage,
   }) = _ShiftUser;
 
   factory ShiftUser.fromJson(Map<String, dynamic> json) =>
@@ -115,18 +95,20 @@ class ShiftUser with _$ShiftUser {
 class PastShiftModelUser with _$PastShiftModelUser {
   const factory PastShiftModelUser({
     int? id,
-    DateTime? createdAt,
-    DateTime? updatedAt,
-    dynamic deletedAt,
+    @JsonKey(name: 'created_at') DateTime? createdAt,
+    @JsonKey(name: 'updated_at') DateTime? updatedAt,
+    @JsonKey(name: 'deleted_at') DateTime? deletedAt,
     String? name,
     String? email,
-    dynamic previousEmail,
-    dynamic profileImage,
-    dynamic phone,
-    bool? isVerified,
+    @JsonKey(name: 'previous_email') String? previousEmail,
+    @JsonKey(name: 'profile_image') String? profileImage,
+    String? phone,
+    @JsonKey(name: 'is_verified') bool? isVerified,
+    @JsonKey(name: 'is_user_onboarding_completed')
     bool? isUserOnboardingCompleted,
-    dynamic onboardingStep,
-    dynamic verificationEmailLastSentOn,
+    @JsonKey(name: 'onboarding_step') String? onboardingStep,
+    @JsonKey(name: 'verification_email_last_sent_on')
+    DateTime? verificationEmailLastSentOn,
   }) = _PastShiftModelUser;
 
   factory PastShiftModelUser.fromJson(Map<String, dynamic> json) =>

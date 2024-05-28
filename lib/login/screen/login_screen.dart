@@ -3,10 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hourtag/cubit/cubit/auth_cubit.dart';
 import 'package:hourtag/home/bottom_navigation.dart';
+import 'package:hourtag/home/dashboard/model/weekly_shift/weekly_shift_model.dart';
 import 'package:hourtag/home/dashboard/repo/dashboard_repo.dart';
 import 'package:hourtag/login/cubit/login_cubit.dart';
 import 'package:hourtag/login/screen/forget_password.dart';
 import 'package:hourtag/util/color_constant.dart';
+import 'package:hourtag/util/functions.dart';
 import 'package:hourtag/util/global_style.dart';
 import 'package:hourtag/util/weight_constant.dart';
 import 'package:hourtag/widgets/custom_button.dart';
@@ -47,16 +49,10 @@ class _LoginScreenState extends State<LoginScreen> {
       child: BlocListener<LoginCubit, LoginState>(
         listener: (context, state) {
           if (state.status == Status.error) {
-            final snackBar = SnackBar(
-              backgroundColor: ColorConstant.red,
-              content: Text(
-                state.error.toString(),
-                textAlign: TextAlign.center,
-                style: const TextStyle(color: Colors.white),
-              ),
-              behavior: SnackBarBehavior.floating,
-            );
-            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+            Func.showSnacksBar(
+                context: context,
+                message: state.error.toString(),
+                status: SnacksBarStatus.error);
           }
         },
         listenWhen: (previous, current) {
@@ -166,6 +162,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                   await repo.getCompanyProfile(
                                       authCubit.state.authToken,
                                       data.selectedCompany?.companyId ?? 0);
+                              WeeklyShiftModel weeklyShiftModel =
+                                  await repo.getWeeklyShift(
+                                      authCubit.state.authToken,
+                                      data.selectedCompany?.companyId ?? 0);
                               int index = 0;
                               if (ongoingShiftData.ongoingShift != null) {
                                 index = companyData.projects!.indexWhere(
@@ -184,6 +184,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                                 teamdata: teamdata,
                                                 ongoingShiftModel:
                                                     ongoingShiftData,
+                                                weeklyShiftModel:
+                                                    weeklyShiftModel,
                                                 companyProfileModel:
                                                     companyData,
                                                 userProfileModel: data,

@@ -45,15 +45,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return TimeParts(hours.toString(), minutes.toString(), seconds.toString());
   }
 
-  TeamActivityModel getSpecificData(List<TeamActivityModel> data, int userId) {
-    for (var item in data) {
-      if (item.user?.id == userId) {
-        return item;
-      }
-    }
-    return const TeamActivityModel();
-  }
-
   TextEditingController note = TextEditingController();
   @override
   void dispose() {
@@ -106,13 +97,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   BlocBuilder<DashboardCubit, DashboardState>(
                     bloc: widget.cubit,
                     builder: (context, state) {
-                      TeamActivityModel data = getSpecificData(
-                          state.teamActivityModel,
-                          state.userProfileModel.id ?? 0);
-
                       return Row(children: [
                         Text(
-                          data.total_shift_time?.hours.toString() ?? '0',
+                          state.weeklyShiftModel.todaysShifts?.totalShiftTime
+                                  ?.hours
+                                  .toString() ??
+                              '0',
                           style: AppStyles.darkLargeTextStyle,
                         ),
                         Text(
@@ -120,7 +110,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           style: AppStyles.lightLargeTextStyle,
                         ),
                         Text(
-                          data.total_shift_time?.minutes.toString() ?? '0',
+                          state.weeklyShiftModel.todaysShifts?.totalShiftTime
+                                  ?.minutes
+                                  .toString() ??
+                              '0',
                           style: AppStyles.darkLargeTextStyle,
                         ),
                         Text(
@@ -324,63 +317,45 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                                                     InkWell(
                                                                       onTap:
                                                                           () {
-                                                                        showCupertinoModalPopup<
-                                                                            void>(
-                                                                          context:
-                                                                              context,
-                                                                          builder: (BuildContext context) =>
-                                                                              CupertinoAlertDialog(
-                                                                            title:
-                                                                                const Text("Are you sure you want to delete this shift?"),
-                                                                            content:
-                                                                                const Text('If you delete this shift, it will be removed from your timesheet and hours will not be counted.'),
-                                                                            actions: <CupertinoDialogAction>[
-                                                                              CupertinoDialogAction(
-                                                                                isDefaultAction: true,
-                                                                                onPressed: () {
-                                                                                  Navigator.pop(context);
-                                                                                },
-                                                                                child: Text(
-                                                                                  "Don't delete",
-                                                                                  style: TextStyle(color: ColorConstant.blue),
-                                                                                ),
+                                                                        showShiftDelete(
+                                                                            context,
+                                                                            () async {
+                                                                          try {
+                                                                            await widget.cubit.delete(
+                                                                              state.ongoingShiftModel.ongoingShift?.id ?? 0,
+                                                                            );
+                                                                            final snackBar =
+                                                                                SnackBar(
+                                                                              backgroundColor: ColorConstant.blue,
+                                                                              content: const Text(
+                                                                                'Successfully deleted!',
+                                                                                textAlign: TextAlign.center,
+                                                                                style: TextStyle(color: Colors.white),
                                                                               ),
-                                                                              CupertinoDialogAction(
-                                                                                isDestructiveAction: true,
-                                                                                onPressed: () async {
-                                                                                  try {
-                                                                                    await widget.cubit.delete(state.ongoingShiftModel.ongoingShift?.id ?? 0);
-                                                                                    final snackBar = SnackBar(
-                                                                                      backgroundColor: ColorConstant.blue,
-                                                                                      content: const Text(
-                                                                                        'Successfully deleted!',
-                                                                                        textAlign: TextAlign.center,
-                                                                                        style: TextStyle(color: Colors.white),
-                                                                                      ),
-                                                                                      behavior: SnackBarBehavior.floating,
-                                                                                    );
-                                                                                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                                                                                  } catch (e) {
-                                                                                    final snackBar = SnackBar(
-                                                                                      backgroundColor: ColorConstant.red,
-                                                                                      content: const Text(
-                                                                                        'Failed to delete the shift!',
-                                                                                        textAlign: TextAlign.center,
-                                                                                        style: TextStyle(color: Colors.white),
-                                                                                      ),
-                                                                                      behavior: SnackBarBehavior.floating,
-                                                                                    );
-                                                                                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                                                                                  }
-                                                                                  Navigator.pop(context);
-                                                                                  Navigator.pop(context);
-                                                                                  widget.cubit.refetchDetailsData();
-                                                                                },
-                                                                                child: Text('Delete', style: TextStyle(color: ColorConstant.red)),
+                                                                              behavior: SnackBarBehavior.floating,
+                                                                            );
+                                                                            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                                                          } catch (e) {
+                                                                            final snackBar =
+                                                                                SnackBar(
+                                                                              backgroundColor: ColorConstant.red,
+                                                                              content: const Text(
+                                                                                'Failed to delete the shift!',
+                                                                                textAlign: TextAlign.center,
+                                                                                style: TextStyle(color: Colors.white),
                                                                               ),
-                                                                            ],
-                                                                          ),
-                                                                        );
+                                                                              behavior: SnackBarBehavior.floating,
+                                                                            );
+                                                                            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                                                          }
+                                                                          Navigator.pop(
+                                                                              context);
+                                                                          Navigator.pop(
+                                                                              context);
+                                                                          widget
+                                                                              .cubit
+                                                                              .refetchDetailsData();
+                                                                        });
                                                                       },
                                                                       child:
                                                                           Text(
@@ -515,17 +490,62 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                                                 const SizedBox(
                                                                   height: 16,
                                                                 ),
-                                                                NoteWidget(
-                                                                  hintText:
-                                                                      'Your shift details',
-                                                                  controller:
-                                                                      note,
-                                                                  onTap: () {
-                                                                    widget.cubit.stopTimer(
-                                                                        note.text,
-                                                                        context);
-                                                                  },
-                                                                  max: 6,
+                                                                Expanded(
+                                                                  child: Row(
+                                                                    crossAxisAlignment:
+                                                                        CrossAxisAlignment
+                                                                            .start,
+                                                                    children: [
+                                                                      Expanded(
+                                                                        child:
+                                                                            NoteWidget(
+                                                                          hintText:
+                                                                              'Your shift details',
+                                                                          controller:
+                                                                              note,
+                                                                          onTap:
+                                                                              () {},
+                                                                          max:
+                                                                              6,
+                                                                        ),
+                                                                      ),
+                                                                      const SizedBox(
+                                                                        width:
+                                                                            10,
+                                                                      ),
+                                                                      InkWell(
+                                                                        onTap:
+                                                                            () {
+                                                                          widget.cubit.stopTimer(
+                                                                              note.text,
+                                                                              context);
+                                                                          note.clear();
+                                                                        },
+                                                                        child:
+                                                                            Container(
+                                                                          height:
+                                                                              75,
+                                                                          width:
+                                                                              75,
+                                                                          padding: const EdgeInsets
+                                                                              .symmetric(
+                                                                              vertical: 18,
+                                                                              horizontal: 16),
+                                                                          decoration: BoxDecoration(
+                                                                              color: ColorConstant.primaryColor,
+                                                                              borderRadius: BorderRadius.circular(12)),
+                                                                          child: Center(
+                                                                              child: Text(
+                                                                            'Send',
+                                                                            style: TextStyle(
+                                                                                color: ColorConstant.borderFillCOlor,
+                                                                                fontSize: 17,
+                                                                                fontWeight: FontWeightConstant.bold),
+                                                                          )),
+                                                                        ),
+                                                                      )
+                                                                    ],
+                                                                  ),
                                                                 )
                                                               ],
                                                             ),
@@ -597,4 +617,32 @@ class _DashboardScreenState extends State<DashboardScreen> {
       ),
     );
   }
+}
+
+Future<void> showShiftDelete(BuildContext context, void Function()? onPressed) {
+  return showCupertinoModalPopup<void>(
+    context: context,
+    builder: (BuildContext context) => CupertinoAlertDialog(
+      title: const Text("Are you sure you want to delete this shift?"),
+      content: const Text(
+          'If you delete this shift, it will be removed from your timesheet and hours will not be counted.'),
+      actions: <CupertinoDialogAction>[
+        CupertinoDialogAction(
+          isDefaultAction: true,
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: Text(
+            "Don't delete",
+            style: TextStyle(color: ColorConstant.blue),
+          ),
+        ),
+        CupertinoDialogAction(
+          isDestructiveAction: true,
+          onPressed: onPressed,
+          child: Text('Delete', style: TextStyle(color: ColorConstant.red)),
+        ),
+      ],
+    ),
+  );
 }

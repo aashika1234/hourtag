@@ -8,6 +8,7 @@ import 'package:hourtag/home/dashboard/model/ongoing_shifts/ongoing_shift_model.
 import 'package:hourtag/home/dashboard/model/start_shift/start_shift_model.dart';
 import 'package:hourtag/home/dashboard/model/team_activity/team_activity_model.dart';
 import 'package:hourtag/home/dashboard/model/user_profile/user_profile_model.dart';
+import 'package:hourtag/home/dashboard/model/weekly_shift/weekly_shift_model.dart';
 import 'package:hourtag/home/dashboard/repo/dashboard_repo.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:socket_io_client/socket_io_client.dart';
@@ -18,6 +19,7 @@ class DashboardCubit extends Cubit<DashboardState> {
   DashboardCubit(this.authToken,
       {required UserProfileModel userProfileModel,
       required List<TeamActivityModel> teamdata,
+      required WeeklyShiftModel weeklyShiftModel,
       required OngoingShiftModel ongoingShiftModel,
       required CompanyProfileModel companyProfileModel,
       required int index})
@@ -26,6 +28,7 @@ class DashboardCubit extends Cubit<DashboardState> {
             teamdata: teamdata,
             ongoingShiftModel: ongoingShiftModel,
             companyProfileModel: companyProfileModel,
+            weeklyShiftModel: weeklyShiftModel,
             index: index)) {
     _startSocket();
   }
@@ -184,10 +187,13 @@ class DashboardCubit extends Cubit<DashboardState> {
         authToken, data.selectedCompany?.companyId ?? 0);
     CompanyProfileModel companyData = await repo.getCompanyProfile(
         authToken, data.selectedCompany?.companyId ?? 0);
+    WeeklyShiftModel weeklyShiftModel = await repo.getWeeklyShift(
+        authToken, data.selectedCompany?.companyId ?? 0);
 
     emit(state.copyWith(
       userProfileModel: data,
       teamActivityModel: teamdata,
+      weeklyShiftModel: weeklyShiftModel,
       ongoingShiftModel: ongoingShiftData,
       companyProfileModel: companyData,
     ));

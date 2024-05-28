@@ -27,11 +27,11 @@ class ManualShiftTimeOutline extends StatelessWidget {
               fontWeight: FontWeightConstant.bold,
               color: ColorConstant.backgroundGrey),
         ),
-        InkWell(
-          onTap: onDateTap,
-          child: Row(
-            children: [
-              Container(
+        Row(
+          children: [
+            InkWell(
+              onTap: onDateTap,
+              child: Container(
                 padding:
                     const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
                 decoration: BoxDecoration(
@@ -47,30 +47,30 @@ class ManualShiftTimeOutline extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(
-                width: 8,
-              ),
-              InkWell(
-                onTap: onTimeTap,
-                child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
-                  decoration: BoxDecoration(
-                      color: ColorConstant.containerBackground,
-                      borderRadius: BorderRadius.circular(12)),
-                  child: Center(
-                    child: Text(
-                      time,
-                      style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeightConstant.normal),
-                    ),
+            ),
+            const SizedBox(
+              width: 8,
+            ),
+            InkWell(
+              onTap: onTimeTap,
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
+                decoration: BoxDecoration(
+                    color: ColorConstant.containerBackground,
+                    borderRadius: BorderRadius.circular(12)),
+                child: Center(
+                  child: Text(
+                    time,
+                    style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeightConstant.normal),
                   ),
                 ),
-              )
-            ],
-          ),
+              ),
+            )
+          ],
         ),
       ],
     );

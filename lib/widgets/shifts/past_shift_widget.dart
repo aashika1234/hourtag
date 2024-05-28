@@ -108,6 +108,8 @@ class PastShiftWidget extends StatelessWidget {
                     child: ShiftDetail(
                       color: Colors.black,
                       shift: Shift(),
+                      onDelete: () {},
+                      onEditTap: () {},
                     ),
                   );
                 },

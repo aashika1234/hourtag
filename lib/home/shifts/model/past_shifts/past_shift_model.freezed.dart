@@ -647,7 +647,9 @@ ShiftsByWeek _$ShiftsByWeekFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$ShiftsByWeek {
+  @JsonKey(name: 'week_start')
   DateTime? get weekStart => throw _privateConstructorUsedError;
+  @JsonKey(name: 'week_end')
   DateTime? get weekEnd => throw _privateConstructorUsedError;
   List<ShiftsByDay>? get shiftsByDay => throw _privateConstructorUsedError;
   Time? get totalWeekTime => throw _privateConstructorUsedError;
@@ -665,8 +667,8 @@ abstract class $ShiftsByWeekCopyWith<$Res> {
       _$ShiftsByWeekCopyWithImpl<$Res, ShiftsByWeek>;
   @useResult
   $Res call(
-      {DateTime? weekStart,
-      DateTime? weekEnd,
+      {@JsonKey(name: 'week_start') DateTime? weekStart,
+      @JsonKey(name: 'week_end') DateTime? weekEnd,
       List<ShiftsByDay>? shiftsByDay,
       Time? totalWeekTime});
 
@@ -733,8 +735,8 @@ abstract class _$$ShiftsByWeekImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {DateTime? weekStart,
-      DateTime? weekEnd,
+      {@JsonKey(name: 'week_start') DateTime? weekStart,
+      @JsonKey(name: 'week_end') DateTime? weekEnd,
       List<ShiftsByDay>? shiftsByDay,
       Time? totalWeekTime});
 
@@ -783,8 +785,8 @@ class __$$ShiftsByWeekImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$ShiftsByWeekImpl implements _ShiftsByWeek {
   const _$ShiftsByWeekImpl(
-      {this.weekStart,
-      this.weekEnd,
+      {@JsonKey(name: 'week_start') this.weekStart,
+      @JsonKey(name: 'week_end') this.weekEnd,
       final List<ShiftsByDay>? shiftsByDay,
       this.totalWeekTime})
       : _shiftsByDay = shiftsByDay;
@@ -793,8 +795,10 @@ class _$ShiftsByWeekImpl implements _ShiftsByWeek {
       _$$ShiftsByWeekImplFromJson(json);
 
   @override
+  @JsonKey(name: 'week_start')
   final DateTime? weekStart;
   @override
+  @JsonKey(name: 'week_end')
   final DateTime? weekEnd;
   final List<ShiftsByDay>? _shiftsByDay;
   @override
@@ -849,8 +853,8 @@ class _$ShiftsByWeekImpl implements _ShiftsByWeek {
 
 abstract class _ShiftsByWeek implements ShiftsByWeek {
   const factory _ShiftsByWeek(
-      {final DateTime? weekStart,
-      final DateTime? weekEnd,
+      {@JsonKey(name: 'week_start') final DateTime? weekStart,
+      @JsonKey(name: 'week_end') final DateTime? weekEnd,
       final List<ShiftsByDay>? shiftsByDay,
       final Time? totalWeekTime}) = _$ShiftsByWeekImpl;
 
@@ -858,8 +862,10 @@ abstract class _ShiftsByWeek implements ShiftsByWeek {
       _$ShiftsByWeekImpl.fromJson;
 
   @override
+  @JsonKey(name: 'week_start')
   DateTime? get weekStart;
   @override
+  @JsonKey(name: 'week_end')
   DateTime? get weekEnd;
   @override
   List<ShiftsByDay>? get shiftsByDay;
@@ -877,8 +883,10 @@ ShiftsByDay _$ShiftsByDayFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$ShiftsByDay {
+  @JsonKey(name: 'day_start')
   DateTime? get dayStart => throw _privateConstructorUsedError;
   Time? get totalDayTime => throw _privateConstructorUsedError;
+  @JsonKey(name: 'day_end')
   DateTime? get dayEnd => throw _privateConstructorUsedError;
   List<Shift>? get shifts => throw _privateConstructorUsedError;
 
@@ -895,9 +903,9 @@ abstract class $ShiftsByDayCopyWith<$Res> {
       _$ShiftsByDayCopyWithImpl<$Res, ShiftsByDay>;
   @useResult
   $Res call(
-      {DateTime? dayStart,
+      {@JsonKey(name: 'day_start') DateTime? dayStart,
       Time? totalDayTime,
-      DateTime? dayEnd,
+      @JsonKey(name: 'day_end') DateTime? dayEnd,
       List<Shift>? shifts});
 
   $TimeCopyWith<$Res>? get totalDayTime;
@@ -963,9 +971,9 @@ abstract class _$$ShiftsByDayImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {DateTime? dayStart,
+      {@JsonKey(name: 'day_start') DateTime? dayStart,
       Time? totalDayTime,
-      DateTime? dayEnd,
+      @JsonKey(name: 'day_end') DateTime? dayEnd,
       List<Shift>? shifts});
 
   @override
@@ -1013,9 +1021,9 @@ class __$$ShiftsByDayImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$ShiftsByDayImpl implements _ShiftsByDay {
   const _$ShiftsByDayImpl(
-      {this.dayStart,
+      {@JsonKey(name: 'day_start') this.dayStart,
       this.totalDayTime,
-      this.dayEnd,
+      @JsonKey(name: 'day_end') this.dayEnd,
       final List<Shift>? shifts})
       : _shifts = shifts;
 
@@ -1023,10 +1031,12 @@ class _$ShiftsByDayImpl implements _ShiftsByDay {
       _$$ShiftsByDayImplFromJson(json);
 
   @override
+  @JsonKey(name: 'day_start')
   final DateTime? dayStart;
   @override
   final Time? totalDayTime;
   @override
+  @JsonKey(name: 'day_end')
   final DateTime? dayEnd;
   final List<Shift>? _shifts;
   @override
@@ -1077,491 +1087,27 @@ class _$ShiftsByDayImpl implements _ShiftsByDay {
 
 abstract class _ShiftsByDay implements ShiftsByDay {
   const factory _ShiftsByDay(
-      {final DateTime? dayStart,
+      {@JsonKey(name: 'day_start') final DateTime? dayStart,
       final Time? totalDayTime,
-      final DateTime? dayEnd,
+      @JsonKey(name: 'day_end') final DateTime? dayEnd,
       final List<Shift>? shifts}) = _$ShiftsByDayImpl;
 
   factory _ShiftsByDay.fromJson(Map<String, dynamic> json) =
       _$ShiftsByDayImpl.fromJson;
 
   @override
+  @JsonKey(name: 'day_start')
   DateTime? get dayStart;
   @override
   Time? get totalDayTime;
   @override
+  @JsonKey(name: 'day_end')
   DateTime? get dayEnd;
   @override
   List<Shift>? get shifts;
   @override
   @JsonKey(ignore: true)
   _$$ShiftsByDayImplCopyWith<_$ShiftsByDayImpl> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-Shift _$ShiftFromJson(Map<String, dynamic> json) {
-  return _Shift.fromJson(json);
-}
-
-/// @nodoc
-mixin _$Shift {
-  int? get id => throw _privateConstructorUsedError;
-  DateTime? get startTime => throw _privateConstructorUsedError;
-  DateTime? get startTimeInTimezone => throw _privateConstructorUsedError;
-  DateTime? get endTime => throw _privateConstructorUsedError;
-  DateTime? get endTimeInTimezone => throw _privateConstructorUsedError;
-  String? get note => throw _privateConstructorUsedError;
-  String? get shiftStatus => throw _privateConstructorUsedError;
-  String? get shiftTimezone => throw _privateConstructorUsedError;
-  int? get userId => throw _privateConstructorUsedError;
-  int? get companyId => throw _privateConstructorUsedError;
-  int? get projectId => throw _privateConstructorUsedError;
-  Project? get project => throw _privateConstructorUsedError;
-  ShiftUser? get user => throw _privateConstructorUsedError;
-  Time? get totalShiftTime => throw _privateConstructorUsedError;
-
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
-  $ShiftCopyWith<Shift> get copyWith => throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $ShiftCopyWith<$Res> {
-  factory $ShiftCopyWith(Shift value, $Res Function(Shift) then) =
-      _$ShiftCopyWithImpl<$Res, Shift>;
-  @useResult
-  $Res call(
-      {int? id,
-      DateTime? startTime,
-      DateTime? startTimeInTimezone,
-      DateTime? endTime,
-      DateTime? endTimeInTimezone,
-      String? note,
-      String? shiftStatus,
-      String? shiftTimezone,
-      int? userId,
-      int? companyId,
-      int? projectId,
-      Project? project,
-      ShiftUser? user,
-      Time? totalShiftTime});
-
-  $ProjectCopyWith<$Res>? get project;
-  $ShiftUserCopyWith<$Res>? get user;
-  $TimeCopyWith<$Res>? get totalShiftTime;
-}
-
-/// @nodoc
-class _$ShiftCopyWithImpl<$Res, $Val extends Shift>
-    implements $ShiftCopyWith<$Res> {
-  _$ShiftCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? id = freezed,
-    Object? startTime = freezed,
-    Object? startTimeInTimezone = freezed,
-    Object? endTime = freezed,
-    Object? endTimeInTimezone = freezed,
-    Object? note = freezed,
-    Object? shiftStatus = freezed,
-    Object? shiftTimezone = freezed,
-    Object? userId = freezed,
-    Object? companyId = freezed,
-    Object? projectId = freezed,
-    Object? project = freezed,
-    Object? user = freezed,
-    Object? totalShiftTime = freezed,
-  }) {
-    return _then(_value.copyWith(
-      id: freezed == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as int?,
-      startTime: freezed == startTime
-          ? _value.startTime
-          : startTime // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
-      startTimeInTimezone: freezed == startTimeInTimezone
-          ? _value.startTimeInTimezone
-          : startTimeInTimezone // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
-      endTime: freezed == endTime
-          ? _value.endTime
-          : endTime // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
-      endTimeInTimezone: freezed == endTimeInTimezone
-          ? _value.endTimeInTimezone
-          : endTimeInTimezone // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
-      note: freezed == note
-          ? _value.note
-          : note // ignore: cast_nullable_to_non_nullable
-              as String?,
-      shiftStatus: freezed == shiftStatus
-          ? _value.shiftStatus
-          : shiftStatus // ignore: cast_nullable_to_non_nullable
-              as String?,
-      shiftTimezone: freezed == shiftTimezone
-          ? _value.shiftTimezone
-          : shiftTimezone // ignore: cast_nullable_to_non_nullable
-              as String?,
-      userId: freezed == userId
-          ? _value.userId
-          : userId // ignore: cast_nullable_to_non_nullable
-              as int?,
-      companyId: freezed == companyId
-          ? _value.companyId
-          : companyId // ignore: cast_nullable_to_non_nullable
-              as int?,
-      projectId: freezed == projectId
-          ? _value.projectId
-          : projectId // ignore: cast_nullable_to_non_nullable
-              as int?,
-      project: freezed == project
-          ? _value.project
-          : project // ignore: cast_nullable_to_non_nullable
-              as Project?,
-      user: freezed == user
-          ? _value.user
-          : user // ignore: cast_nullable_to_non_nullable
-              as ShiftUser?,
-      totalShiftTime: freezed == totalShiftTime
-          ? _value.totalShiftTime
-          : totalShiftTime // ignore: cast_nullable_to_non_nullable
-              as Time?,
-    ) as $Val);
-  }
-
-  @override
-  @pragma('vm:prefer-inline')
-  $ProjectCopyWith<$Res>? get project {
-    if (_value.project == null) {
-      return null;
-    }
-
-    return $ProjectCopyWith<$Res>(_value.project!, (value) {
-      return _then(_value.copyWith(project: value) as $Val);
-    });
-  }
-
-  @override
-  @pragma('vm:prefer-inline')
-  $ShiftUserCopyWith<$Res>? get user {
-    if (_value.user == null) {
-      return null;
-    }
-
-    return $ShiftUserCopyWith<$Res>(_value.user!, (value) {
-      return _then(_value.copyWith(user: value) as $Val);
-    });
-  }
-
-  @override
-  @pragma('vm:prefer-inline')
-  $TimeCopyWith<$Res>? get totalShiftTime {
-    if (_value.totalShiftTime == null) {
-      return null;
-    }
-
-    return $TimeCopyWith<$Res>(_value.totalShiftTime!, (value) {
-      return _then(_value.copyWith(totalShiftTime: value) as $Val);
-    });
-  }
-}
-
-/// @nodoc
-abstract class _$$ShiftImplCopyWith<$Res> implements $ShiftCopyWith<$Res> {
-  factory _$$ShiftImplCopyWith(
-          _$ShiftImpl value, $Res Function(_$ShiftImpl) then) =
-      __$$ShiftImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call(
-      {int? id,
-      DateTime? startTime,
-      DateTime? startTimeInTimezone,
-      DateTime? endTime,
-      DateTime? endTimeInTimezone,
-      String? note,
-      String? shiftStatus,
-      String? shiftTimezone,
-      int? userId,
-      int? companyId,
-      int? projectId,
-      Project? project,
-      ShiftUser? user,
-      Time? totalShiftTime});
-
-  @override
-  $ProjectCopyWith<$Res>? get project;
-  @override
-  $ShiftUserCopyWith<$Res>? get user;
-  @override
-  $TimeCopyWith<$Res>? get totalShiftTime;
-}
-
-/// @nodoc
-class __$$ShiftImplCopyWithImpl<$Res>
-    extends _$ShiftCopyWithImpl<$Res, _$ShiftImpl>
-    implements _$$ShiftImplCopyWith<$Res> {
-  __$$ShiftImplCopyWithImpl(
-      _$ShiftImpl _value, $Res Function(_$ShiftImpl) _then)
-      : super(_value, _then);
-
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? id = freezed,
-    Object? startTime = freezed,
-    Object? startTimeInTimezone = freezed,
-    Object? endTime = freezed,
-    Object? endTimeInTimezone = freezed,
-    Object? note = freezed,
-    Object? shiftStatus = freezed,
-    Object? shiftTimezone = freezed,
-    Object? userId = freezed,
-    Object? companyId = freezed,
-    Object? projectId = freezed,
-    Object? project = freezed,
-    Object? user = freezed,
-    Object? totalShiftTime = freezed,
-  }) {
-    return _then(_$ShiftImpl(
-      id: freezed == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as int?,
-      startTime: freezed == startTime
-          ? _value.startTime
-          : startTime // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
-      startTimeInTimezone: freezed == startTimeInTimezone
-          ? _value.startTimeInTimezone
-          : startTimeInTimezone // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
-      endTime: freezed == endTime
-          ? _value.endTime
-          : endTime // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
-      endTimeInTimezone: freezed == endTimeInTimezone
-          ? _value.endTimeInTimezone
-          : endTimeInTimezone // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
-      note: freezed == note
-          ? _value.note
-          : note // ignore: cast_nullable_to_non_nullable
-              as String?,
-      shiftStatus: freezed == shiftStatus
-          ? _value.shiftStatus
-          : shiftStatus // ignore: cast_nullable_to_non_nullable
-              as String?,
-      shiftTimezone: freezed == shiftTimezone
-          ? _value.shiftTimezone
-          : shiftTimezone // ignore: cast_nullable_to_non_nullable
-              as String?,
-      userId: freezed == userId
-          ? _value.userId
-          : userId // ignore: cast_nullable_to_non_nullable
-              as int?,
-      companyId: freezed == companyId
-          ? _value.companyId
-          : companyId // ignore: cast_nullable_to_non_nullable
-              as int?,
-      projectId: freezed == projectId
-          ? _value.projectId
-          : projectId // ignore: cast_nullable_to_non_nullable
-              as int?,
-      project: freezed == project
-          ? _value.project
-          : project // ignore: cast_nullable_to_non_nullable
-              as Project?,
-      user: freezed == user
-          ? _value.user
-          : user // ignore: cast_nullable_to_non_nullable
-              as ShiftUser?,
-      totalShiftTime: freezed == totalShiftTime
-          ? _value.totalShiftTime
-          : totalShiftTime // ignore: cast_nullable_to_non_nullable
-              as Time?,
-    ));
-  }
-}
-
-/// @nodoc
-@JsonSerializable()
-class _$ShiftImpl implements _Shift {
-  const _$ShiftImpl(
-      {this.id,
-      this.startTime,
-      this.startTimeInTimezone,
-      this.endTime,
-      this.endTimeInTimezone,
-      this.note,
-      this.shiftStatus,
-      this.shiftTimezone,
-      this.userId,
-      this.companyId,
-      this.projectId,
-      this.project,
-      this.user,
-      this.totalShiftTime});
-
-  factory _$ShiftImpl.fromJson(Map<String, dynamic> json) =>
-      _$$ShiftImplFromJson(json);
-
-  @override
-  final int? id;
-  @override
-  final DateTime? startTime;
-  @override
-  final DateTime? startTimeInTimezone;
-  @override
-  final DateTime? endTime;
-  @override
-  final DateTime? endTimeInTimezone;
-  @override
-  final String? note;
-  @override
-  final String? shiftStatus;
-  @override
-  final String? shiftTimezone;
-  @override
-  final int? userId;
-  @override
-  final int? companyId;
-  @override
-  final int? projectId;
-  @override
-  final Project? project;
-  @override
-  final ShiftUser? user;
-  @override
-  final Time? totalShiftTime;
-
-  @override
-  String toString() {
-    return 'Shift(id: $id, startTime: $startTime, startTimeInTimezone: $startTimeInTimezone, endTime: $endTime, endTimeInTimezone: $endTimeInTimezone, note: $note, shiftStatus: $shiftStatus, shiftTimezone: $shiftTimezone, userId: $userId, companyId: $companyId, projectId: $projectId, project: $project, user: $user, totalShiftTime: $totalShiftTime)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$ShiftImpl &&
-            (identical(other.id, id) || other.id == id) &&
-            (identical(other.startTime, startTime) ||
-                other.startTime == startTime) &&
-            (identical(other.startTimeInTimezone, startTimeInTimezone) ||
-                other.startTimeInTimezone == startTimeInTimezone) &&
-            (identical(other.endTime, endTime) || other.endTime == endTime) &&
-            (identical(other.endTimeInTimezone, endTimeInTimezone) ||
-                other.endTimeInTimezone == endTimeInTimezone) &&
-            (identical(other.note, note) || other.note == note) &&
-            (identical(other.shiftStatus, shiftStatus) ||
-                other.shiftStatus == shiftStatus) &&
-            (identical(other.shiftTimezone, shiftTimezone) ||
-                other.shiftTimezone == shiftTimezone) &&
-            (identical(other.userId, userId) || other.userId == userId) &&
-            (identical(other.companyId, companyId) ||
-                other.companyId == companyId) &&
-            (identical(other.projectId, projectId) ||
-                other.projectId == projectId) &&
-            (identical(other.project, project) || other.project == project) &&
-            (identical(other.user, user) || other.user == user) &&
-            (identical(other.totalShiftTime, totalShiftTime) ||
-                other.totalShiftTime == totalShiftTime));
-  }
-
-  @JsonKey(ignore: true)
-  @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      id,
-      startTime,
-      startTimeInTimezone,
-      endTime,
-      endTimeInTimezone,
-      note,
-      shiftStatus,
-      shiftTimezone,
-      userId,
-      companyId,
-      projectId,
-      project,
-      user,
-      totalShiftTime);
-
-  @JsonKey(ignore: true)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$ShiftImplCopyWith<_$ShiftImpl> get copyWith =>
-      __$$ShiftImplCopyWithImpl<_$ShiftImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$ShiftImplToJson(
-      this,
-    );
-  }
-}
-
-abstract class _Shift implements Shift {
-  const factory _Shift(
-      {final int? id,
-      final DateTime? startTime,
-      final DateTime? startTimeInTimezone,
-      final DateTime? endTime,
-      final DateTime? endTimeInTimezone,
-      final String? note,
-      final String? shiftStatus,
-      final String? shiftTimezone,
-      final int? userId,
-      final int? companyId,
-      final int? projectId,
-      final Project? project,
-      final ShiftUser? user,
-      final Time? totalShiftTime}) = _$ShiftImpl;
-
-  factory _Shift.fromJson(Map<String, dynamic> json) = _$ShiftImpl.fromJson;
-
-  @override
-  int? get id;
-  @override
-  DateTime? get startTime;
-  @override
-  DateTime? get startTimeInTimezone;
-  @override
-  DateTime? get endTime;
-  @override
-  DateTime? get endTimeInTimezone;
-  @override
-  String? get note;
-  @override
-  String? get shiftStatus;
-  @override
-  String? get shiftTimezone;
-  @override
-  int? get userId;
-  @override
-  int? get companyId;
-  @override
-  int? get projectId;
-  @override
-  Project? get project;
-  @override
-  ShiftUser? get user;
-  @override
-  Time? get totalShiftTime;
-  @override
-  @JsonKey(ignore: true)
-  _$$ShiftImplCopyWith<_$ShiftImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
@@ -1574,7 +1120,8 @@ mixin _$ShiftUser {
   int? get id => throw _privateConstructorUsedError;
   String? get name => throw _privateConstructorUsedError;
   String? get email => throw _privateConstructorUsedError;
-  dynamic get profileImage => throw _privateConstructorUsedError;
+  @JsonKey(name: 'profile_image')
+  String? get profileImage => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -1587,7 +1134,11 @@ abstract class $ShiftUserCopyWith<$Res> {
   factory $ShiftUserCopyWith(ShiftUser value, $Res Function(ShiftUser) then) =
       _$ShiftUserCopyWithImpl<$Res, ShiftUser>;
   @useResult
-  $Res call({int? id, String? name, String? email, dynamic profileImage});
+  $Res call(
+      {int? id,
+      String? name,
+      String? email,
+      @JsonKey(name: 'profile_image') String? profileImage});
 }
 
 /// @nodoc
@@ -1624,7 +1175,7 @@ class _$ShiftUserCopyWithImpl<$Res, $Val extends ShiftUser>
       profileImage: freezed == profileImage
           ? _value.profileImage
           : profileImage // ignore: cast_nullable_to_non_nullable
-              as dynamic,
+              as String?,
     ) as $Val);
   }
 }
@@ -1637,7 +1188,11 @@ abstract class _$$ShiftUserImplCopyWith<$Res>
       __$$ShiftUserImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({int? id, String? name, String? email, dynamic profileImage});
+  $Res call(
+      {int? id,
+      String? name,
+      String? email,
+      @JsonKey(name: 'profile_image') String? profileImage});
 }
 
 /// @nodoc
@@ -1672,7 +1227,7 @@ class __$$ShiftUserImplCopyWithImpl<$Res>
       profileImage: freezed == profileImage
           ? _value.profileImage
           : profileImage // ignore: cast_nullable_to_non_nullable
-              as dynamic,
+              as String?,
     ));
   }
 }
@@ -1680,7 +1235,11 @@ class __$$ShiftUserImplCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$ShiftUserImpl implements _ShiftUser {
-  const _$ShiftUserImpl({this.id, this.name, this.email, this.profileImage});
+  const _$ShiftUserImpl(
+      {this.id,
+      this.name,
+      this.email,
+      @JsonKey(name: 'profile_image') this.profileImage});
 
   factory _$ShiftUserImpl.fromJson(Map<String, dynamic> json) =>
       _$$ShiftUserImplFromJson(json);
@@ -1692,7 +1251,8 @@ class _$ShiftUserImpl implements _ShiftUser {
   @override
   final String? email;
   @override
-  final dynamic profileImage;
+  @JsonKey(name: 'profile_image')
+  final String? profileImage;
 
   @override
   String toString() {
@@ -1707,14 +1267,13 @@ class _$ShiftUserImpl implements _ShiftUser {
             (identical(other.id, id) || other.id == id) &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.email, email) || other.email == email) &&
-            const DeepCollectionEquality()
-                .equals(other.profileImage, profileImage));
+            (identical(other.profileImage, profileImage) ||
+                other.profileImage == profileImage));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, id, name, email,
-      const DeepCollectionEquality().hash(profileImage));
+  int get hashCode => Object.hash(runtimeType, id, name, email, profileImage);
 
   @JsonKey(ignore: true)
   @override
@@ -1732,10 +1291,11 @@ class _$ShiftUserImpl implements _ShiftUser {
 
 abstract class _ShiftUser implements ShiftUser {
   const factory _ShiftUser(
-      {final int? id,
-      final String? name,
-      final String? email,
-      final dynamic profileImage}) = _$ShiftUserImpl;
+          {final int? id,
+          final String? name,
+          final String? email,
+          @JsonKey(name: 'profile_image') final String? profileImage}) =
+      _$ShiftUserImpl;
 
   factory _ShiftUser.fromJson(Map<String, dynamic> json) =
       _$ShiftUserImpl.fromJson;
@@ -1747,7 +1307,8 @@ abstract class _ShiftUser implements ShiftUser {
   @override
   String? get email;
   @override
-  dynamic get profileImage;
+  @JsonKey(name: 'profile_image')
+  String? get profileImage;
   @override
   @JsonKey(ignore: true)
   _$$ShiftUserImplCopyWith<_$ShiftUserImpl> get copyWith =>
@@ -1761,18 +1322,28 @@ PastShiftModelUser _$PastShiftModelUserFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$PastShiftModelUser {
   int? get id => throw _privateConstructorUsedError;
+  @JsonKey(name: 'created_at')
   DateTime? get createdAt => throw _privateConstructorUsedError;
+  @JsonKey(name: 'updated_at')
   DateTime? get updatedAt => throw _privateConstructorUsedError;
-  dynamic get deletedAt => throw _privateConstructorUsedError;
+  @JsonKey(name: 'deleted_at')
+  DateTime? get deletedAt => throw _privateConstructorUsedError;
   String? get name => throw _privateConstructorUsedError;
   String? get email => throw _privateConstructorUsedError;
-  dynamic get previousEmail => throw _privateConstructorUsedError;
-  dynamic get profileImage => throw _privateConstructorUsedError;
-  dynamic get phone => throw _privateConstructorUsedError;
+  @JsonKey(name: 'previous_email')
+  String? get previousEmail => throw _privateConstructorUsedError;
+  @JsonKey(name: 'profile_image')
+  String? get profileImage => throw _privateConstructorUsedError;
+  String? get phone => throw _privateConstructorUsedError;
+  @JsonKey(name: 'is_verified')
   bool? get isVerified => throw _privateConstructorUsedError;
+  @JsonKey(name: 'is_user_onboarding_completed')
   bool? get isUserOnboardingCompleted => throw _privateConstructorUsedError;
-  dynamic get onboardingStep => throw _privateConstructorUsedError;
-  dynamic get verificationEmailLastSentOn => throw _privateConstructorUsedError;
+  @JsonKey(name: 'onboarding_step')
+  String? get onboardingStep => throw _privateConstructorUsedError;
+  @JsonKey(name: 'verification_email_last_sent_on')
+  DateTime? get verificationEmailLastSentOn =>
+      throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -1788,18 +1359,20 @@ abstract class $PastShiftModelUserCopyWith<$Res> {
   @useResult
   $Res call(
       {int? id,
-      DateTime? createdAt,
-      DateTime? updatedAt,
-      dynamic deletedAt,
+      @JsonKey(name: 'created_at') DateTime? createdAt,
+      @JsonKey(name: 'updated_at') DateTime? updatedAt,
+      @JsonKey(name: 'deleted_at') DateTime? deletedAt,
       String? name,
       String? email,
-      dynamic previousEmail,
-      dynamic profileImage,
-      dynamic phone,
-      bool? isVerified,
+      @JsonKey(name: 'previous_email') String? previousEmail,
+      @JsonKey(name: 'profile_image') String? profileImage,
+      String? phone,
+      @JsonKey(name: 'is_verified') bool? isVerified,
+      @JsonKey(name: 'is_user_onboarding_completed')
       bool? isUserOnboardingCompleted,
-      dynamic onboardingStep,
-      dynamic verificationEmailLastSentOn});
+      @JsonKey(name: 'onboarding_step') String? onboardingStep,
+      @JsonKey(name: 'verification_email_last_sent_on')
+      DateTime? verificationEmailLastSentOn});
 }
 
 /// @nodoc
@@ -1845,7 +1418,7 @@ class _$PastShiftModelUserCopyWithImpl<$Res, $Val extends PastShiftModelUser>
       deletedAt: freezed == deletedAt
           ? _value.deletedAt
           : deletedAt // ignore: cast_nullable_to_non_nullable
-              as dynamic,
+              as DateTime?,
       name: freezed == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -1857,15 +1430,15 @@ class _$PastShiftModelUserCopyWithImpl<$Res, $Val extends PastShiftModelUser>
       previousEmail: freezed == previousEmail
           ? _value.previousEmail
           : previousEmail // ignore: cast_nullable_to_non_nullable
-              as dynamic,
+              as String?,
       profileImage: freezed == profileImage
           ? _value.profileImage
           : profileImage // ignore: cast_nullable_to_non_nullable
-              as dynamic,
+              as String?,
       phone: freezed == phone
           ? _value.phone
           : phone // ignore: cast_nullable_to_non_nullable
-              as dynamic,
+              as String?,
       isVerified: freezed == isVerified
           ? _value.isVerified
           : isVerified // ignore: cast_nullable_to_non_nullable
@@ -1877,11 +1450,11 @@ class _$PastShiftModelUserCopyWithImpl<$Res, $Val extends PastShiftModelUser>
       onboardingStep: freezed == onboardingStep
           ? _value.onboardingStep
           : onboardingStep // ignore: cast_nullable_to_non_nullable
-              as dynamic,
+              as String?,
       verificationEmailLastSentOn: freezed == verificationEmailLastSentOn
           ? _value.verificationEmailLastSentOn
           : verificationEmailLastSentOn // ignore: cast_nullable_to_non_nullable
-              as dynamic,
+              as DateTime?,
     ) as $Val);
   }
 }
@@ -1896,18 +1469,20 @@ abstract class _$$PastShiftModelUserImplCopyWith<$Res>
   @useResult
   $Res call(
       {int? id,
-      DateTime? createdAt,
-      DateTime? updatedAt,
-      dynamic deletedAt,
+      @JsonKey(name: 'created_at') DateTime? createdAt,
+      @JsonKey(name: 'updated_at') DateTime? updatedAt,
+      @JsonKey(name: 'deleted_at') DateTime? deletedAt,
       String? name,
       String? email,
-      dynamic previousEmail,
-      dynamic profileImage,
-      dynamic phone,
-      bool? isVerified,
+      @JsonKey(name: 'previous_email') String? previousEmail,
+      @JsonKey(name: 'profile_image') String? profileImage,
+      String? phone,
+      @JsonKey(name: 'is_verified') bool? isVerified,
+      @JsonKey(name: 'is_user_onboarding_completed')
       bool? isUserOnboardingCompleted,
-      dynamic onboardingStep,
-      dynamic verificationEmailLastSentOn});
+      @JsonKey(name: 'onboarding_step') String? onboardingStep,
+      @JsonKey(name: 'verification_email_last_sent_on')
+      DateTime? verificationEmailLastSentOn});
 }
 
 /// @nodoc
@@ -1951,7 +1526,7 @@ class __$$PastShiftModelUserImplCopyWithImpl<$Res>
       deletedAt: freezed == deletedAt
           ? _value.deletedAt
           : deletedAt // ignore: cast_nullable_to_non_nullable
-              as dynamic,
+              as DateTime?,
       name: freezed == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -1963,15 +1538,15 @@ class __$$PastShiftModelUserImplCopyWithImpl<$Res>
       previousEmail: freezed == previousEmail
           ? _value.previousEmail
           : previousEmail // ignore: cast_nullable_to_non_nullable
-              as dynamic,
+              as String?,
       profileImage: freezed == profileImage
           ? _value.profileImage
           : profileImage // ignore: cast_nullable_to_non_nullable
-              as dynamic,
+              as String?,
       phone: freezed == phone
           ? _value.phone
           : phone // ignore: cast_nullable_to_non_nullable
-              as dynamic,
+              as String?,
       isVerified: freezed == isVerified
           ? _value.isVerified
           : isVerified // ignore: cast_nullable_to_non_nullable
@@ -1983,11 +1558,11 @@ class __$$PastShiftModelUserImplCopyWithImpl<$Res>
       onboardingStep: freezed == onboardingStep
           ? _value.onboardingStep
           : onboardingStep // ignore: cast_nullable_to_non_nullable
-              as dynamic,
+              as String?,
       verificationEmailLastSentOn: freezed == verificationEmailLastSentOn
           ? _value.verificationEmailLastSentOn
           : verificationEmailLastSentOn // ignore: cast_nullable_to_non_nullable
-              as dynamic,
+              as DateTime?,
     ));
   }
 }
@@ -1997,17 +1572,19 @@ class __$$PastShiftModelUserImplCopyWithImpl<$Res>
 class _$PastShiftModelUserImpl implements _PastShiftModelUser {
   const _$PastShiftModelUserImpl(
       {this.id,
-      this.createdAt,
-      this.updatedAt,
-      this.deletedAt,
+      @JsonKey(name: 'created_at') this.createdAt,
+      @JsonKey(name: 'updated_at') this.updatedAt,
+      @JsonKey(name: 'deleted_at') this.deletedAt,
       this.name,
       this.email,
-      this.previousEmail,
-      this.profileImage,
+      @JsonKey(name: 'previous_email') this.previousEmail,
+      @JsonKey(name: 'profile_image') this.profileImage,
       this.phone,
-      this.isVerified,
+      @JsonKey(name: 'is_verified') this.isVerified,
+      @JsonKey(name: 'is_user_onboarding_completed')
       this.isUserOnboardingCompleted,
-      this.onboardingStep,
+      @JsonKey(name: 'onboarding_step') this.onboardingStep,
+      @JsonKey(name: 'verification_email_last_sent_on')
       this.verificationEmailLastSentOn});
 
   factory _$PastShiftModelUserImpl.fromJson(Map<String, dynamic> json) =>
@@ -2016,29 +1593,38 @@ class _$PastShiftModelUserImpl implements _PastShiftModelUser {
   @override
   final int? id;
   @override
+  @JsonKey(name: 'created_at')
   final DateTime? createdAt;
   @override
+  @JsonKey(name: 'updated_at')
   final DateTime? updatedAt;
   @override
-  final dynamic deletedAt;
+  @JsonKey(name: 'deleted_at')
+  final DateTime? deletedAt;
   @override
   final String? name;
   @override
   final String? email;
   @override
-  final dynamic previousEmail;
+  @JsonKey(name: 'previous_email')
+  final String? previousEmail;
   @override
-  final dynamic profileImage;
+  @JsonKey(name: 'profile_image')
+  final String? profileImage;
   @override
-  final dynamic phone;
+  final String? phone;
   @override
+  @JsonKey(name: 'is_verified')
   final bool? isVerified;
   @override
+  @JsonKey(name: 'is_user_onboarding_completed')
   final bool? isUserOnboardingCompleted;
   @override
-  final dynamic onboardingStep;
+  @JsonKey(name: 'onboarding_step')
+  final String? onboardingStep;
   @override
-  final dynamic verificationEmailLastSentOn;
+  @JsonKey(name: 'verification_email_last_sent_on')
+  final DateTime? verificationEmailLastSentOn;
 
   @override
   String toString() {
@@ -2055,24 +1641,26 @@ class _$PastShiftModelUserImpl implements _PastShiftModelUser {
                 other.createdAt == createdAt) &&
             (identical(other.updatedAt, updatedAt) ||
                 other.updatedAt == updatedAt) &&
-            const DeepCollectionEquality().equals(other.deletedAt, deletedAt) &&
+            (identical(other.deletedAt, deletedAt) ||
+                other.deletedAt == deletedAt) &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.email, email) || other.email == email) &&
-            const DeepCollectionEquality()
-                .equals(other.previousEmail, previousEmail) &&
-            const DeepCollectionEquality()
-                .equals(other.profileImage, profileImage) &&
-            const DeepCollectionEquality().equals(other.phone, phone) &&
+            (identical(other.previousEmail, previousEmail) ||
+                other.previousEmail == previousEmail) &&
+            (identical(other.profileImage, profileImage) ||
+                other.profileImage == profileImage) &&
+            (identical(other.phone, phone) || other.phone == phone) &&
             (identical(other.isVerified, isVerified) ||
                 other.isVerified == isVerified) &&
             (identical(other.isUserOnboardingCompleted,
                     isUserOnboardingCompleted) ||
                 other.isUserOnboardingCompleted == isUserOnboardingCompleted) &&
-            const DeepCollectionEquality()
-                .equals(other.onboardingStep, onboardingStep) &&
-            const DeepCollectionEquality().equals(
-                other.verificationEmailLastSentOn,
-                verificationEmailLastSentOn));
+            (identical(other.onboardingStep, onboardingStep) ||
+                other.onboardingStep == onboardingStep) &&
+            (identical(other.verificationEmailLastSentOn,
+                    verificationEmailLastSentOn) ||
+                other.verificationEmailLastSentOn ==
+                    verificationEmailLastSentOn));
   }
 
   @JsonKey(ignore: true)
@@ -2082,16 +1670,16 @@ class _$PastShiftModelUserImpl implements _PastShiftModelUser {
       id,
       createdAt,
       updatedAt,
-      const DeepCollectionEquality().hash(deletedAt),
+      deletedAt,
       name,
       email,
-      const DeepCollectionEquality().hash(previousEmail),
-      const DeepCollectionEquality().hash(profileImage),
-      const DeepCollectionEquality().hash(phone),
+      previousEmail,
+      profileImage,
+      phone,
       isVerified,
       isUserOnboardingCompleted,
-      const DeepCollectionEquality().hash(onboardingStep),
-      const DeepCollectionEquality().hash(verificationEmailLastSentOn));
+      onboardingStep,
+      verificationEmailLastSentOn);
 
   @JsonKey(ignore: true)
   @override
@@ -2111,18 +1699,20 @@ class _$PastShiftModelUserImpl implements _PastShiftModelUser {
 abstract class _PastShiftModelUser implements PastShiftModelUser {
   const factory _PastShiftModelUser(
       {final int? id,
-      final DateTime? createdAt,
-      final DateTime? updatedAt,
-      final dynamic deletedAt,
+      @JsonKey(name: 'created_at') final DateTime? createdAt,
+      @JsonKey(name: 'updated_at') final DateTime? updatedAt,
+      @JsonKey(name: 'deleted_at') final DateTime? deletedAt,
       final String? name,
       final String? email,
-      final dynamic previousEmail,
-      final dynamic profileImage,
-      final dynamic phone,
-      final bool? isVerified,
+      @JsonKey(name: 'previous_email') final String? previousEmail,
+      @JsonKey(name: 'profile_image') final String? profileImage,
+      final String? phone,
+      @JsonKey(name: 'is_verified') final bool? isVerified,
+      @JsonKey(name: 'is_user_onboarding_completed')
       final bool? isUserOnboardingCompleted,
-      final dynamic onboardingStep,
-      final dynamic verificationEmailLastSentOn}) = _$PastShiftModelUserImpl;
+      @JsonKey(name: 'onboarding_step') final String? onboardingStep,
+      @JsonKey(name: 'verification_email_last_sent_on')
+      final DateTime? verificationEmailLastSentOn}) = _$PastShiftModelUserImpl;
 
   factory _PastShiftModelUser.fromJson(Map<String, dynamic> json) =
       _$PastShiftModelUserImpl.fromJson;
@@ -2130,29 +1720,38 @@ abstract class _PastShiftModelUser implements PastShiftModelUser {
   @override
   int? get id;
   @override
+  @JsonKey(name: 'created_at')
   DateTime? get createdAt;
   @override
+  @JsonKey(name: 'updated_at')
   DateTime? get updatedAt;
   @override
-  dynamic get deletedAt;
+  @JsonKey(name: 'deleted_at')
+  DateTime? get deletedAt;
   @override
   String? get name;
   @override
   String? get email;
   @override
-  dynamic get previousEmail;
+  @JsonKey(name: 'previous_email')
+  String? get previousEmail;
   @override
-  dynamic get profileImage;
+  @JsonKey(name: 'profile_image')
+  String? get profileImage;
   @override
-  dynamic get phone;
+  String? get phone;
   @override
+  @JsonKey(name: 'is_verified')
   bool? get isVerified;
   @override
+  @JsonKey(name: 'is_user_onboarding_completed')
   bool? get isUserOnboardingCompleted;
   @override
-  dynamic get onboardingStep;
+  @JsonKey(name: 'onboarding_step')
+  String? get onboardingStep;
   @override
-  dynamic get verificationEmailLastSentOn;
+  @JsonKey(name: 'verification_email_last_sent_on')
+  DateTime? get verificationEmailLastSentOn;
   @override
   @JsonKey(ignore: true)
   _$$PastShiftModelUserImplCopyWith<_$PastShiftModelUserImpl> get copyWith =>

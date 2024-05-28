@@ -10,6 +10,7 @@ class ColorConstant {
   static Color blue = const Color(0xff007AFF);
   static Color backgroundGrey = const Color(0xffF5F5F5);
   static Color cPurple = const Color(0xff7E56DA);
+  static Color cPurpleWhite = const Color.fromARGB(255, 186, 169, 226);
   static Color backgroundRed = const Color.fromRGBO(249, 45, 32, 0.15);
   static Color red = const Color(0xffF92D20);
   static Color orange = const Color(0xffFD6414);
