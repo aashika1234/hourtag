@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hourtag/cubit/cubit/auth_cubit.dart';
 import 'package:hourtag/home/dashboard/cubit/dashboard_cubit.dart';
-import 'package:hourtag/home/dashboard/model/team_activity/team_activity_model.dart';
 import 'package:hourtag/util/color_constant.dart';
 import 'package:hourtag/util/functions.dart';
 import 'package:hourtag/util/global_style.dart';
