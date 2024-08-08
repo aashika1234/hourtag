@@ -6,61 +6,41 @@ class NoteWidget extends StatelessWidget {
   const NoteWidget(
       {super.key,
       required this.hintText,
+      this.readOnly,
       required this.controller,
       required this.onTap,
       required this.max});
   final String hintText;
   final TextEditingController controller;
   final void Function() onTap;
+  final bool? readOnly;
   final int max;
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(
-          width: MediaQuery.of(context).size.width * 0.68,
-          child: TextField(
-            controller: controller,
-            style: TextStyle(
-                color: ColorConstant.textGrey2,
-                fontWeight: FontWeightConstant.normal),
-            maxLines: max,
-            decoration: InputDecoration(
-              filled: true,
-              fillColor: Colors.black,
-              hintText: hintText,
-              hintStyle: TextStyle(
-                  color: ColorConstant.textGrey2,
-                  fontWeight: FontWeightConstant.normal),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
-          ),
+    return TextField(
+      readOnly: readOnly ?? false,
+      controller: controller,
+      style: TextStyle(
+          color: ColorConstant.textGrey2,
+          fontWeight: FontWeightConstant.normal),
+      maxLines: max,
+      decoration: InputDecoration(
+        filled: true,
+        fillColor: Colors.black,
+        hintText: hintText,
+        hintStyle: TextStyle(
+            color: ColorConstant.textGrey2,
+            fontWeight: FontWeightConstant.normal),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
         ),
-        const SizedBox(
-          width: 10,
+        disabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
         ),
-        InkWell(
-          onTap: onTap,
-          child: Container(
-            padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 16),
-            decoration: BoxDecoration(
-                color: ColorConstant.primaryColor,
-                borderRadius: BorderRadius.circular(12)),
-            child: Center(
-                child: Text(
-              'Send',
-              style: TextStyle(
-                  color: ColorConstant.borderFillCOlor,
-                  fontSize: 17,
-                  fontWeight: FontWeightConstant.bold),
-            )),
-          ),
-        )
-      ],
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+      ),
     );
   }
 }

@@ -13,6 +13,7 @@ class DashboardState {
   final DashboardStatus status;
   final UserProfileModel userProfileModel;
   final List<TeamActivityModel> teamActivityModel;
+  final WeeklyShiftModel weeklyShiftModel;
   final CompanyProfileModel companyProfileModel;
   final StartShiftModel startShiftModel;
   final OngoingShiftModel ongoingShiftModel;
@@ -21,6 +22,7 @@ class DashboardState {
       {required this.selectedIndex,
       required this.durationInSeconds,
       required this.socketStatus,
+      required this.weeklyShiftModel,
       required this.started,
       required this.status,
       required this.userProfileModel,
@@ -41,13 +43,15 @@ class DashboardState {
         errormsg,
         companyProfileModel,
         startShiftModel,
-        ongoingShiftModel
+        ongoingShiftModel,
+        weeklyShiftModel
       ];
   factory DashboardState.initial(
       {required UserProfileModel userProfileModel,
       required List<TeamActivityModel> teamdata,
       required OngoingShiftModel ongoingShiftModel,
       required CompanyProfileModel companyProfileModel,
+      required WeeklyShiftModel weeklyShiftModel,
       required int index}) {
     return DashboardState(
         durationInSeconds: 0,
@@ -60,6 +64,7 @@ class DashboardState {
         teamActivityModel: teamdata,
         companyProfileModel: companyProfileModel,
         startShiftModel: const StartShiftModel(),
+        weeklyShiftModel: weeklyShiftModel,
         ongoingShiftModel: ongoingShiftModel);
   }
 
@@ -74,6 +79,7 @@ class DashboardState {
       String? errormsg,
       CompanyProfileModel? companyProfileModel,
       StartShiftModel? startShiftModel,
+      WeeklyShiftModel? weeklyShiftModel,
       OngoingShiftModel? ongoingShiftModel}) {
     return DashboardState(
         durationInSeconds: durationInSeconds ?? this.durationInSeconds,
@@ -86,6 +92,7 @@ class DashboardState {
         teamActivityModel: teamActivityModel ?? this.teamActivityModel,
         companyProfileModel: companyProfileModel ?? this.companyProfileModel,
         startShiftModel: startShiftModel ?? this.startShiftModel,
-        ongoingShiftModel: ongoingShiftModel ?? this.ongoingShiftModel);
+        ongoingShiftModel: ongoingShiftModel ?? this.ongoingShiftModel,
+        weeklyShiftModel: weeklyShiftModel ?? this.weeklyShiftModel);
   }
 }

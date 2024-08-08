@@ -8,6 +8,7 @@ import 'package:hourtag/home/dashboard/model/ongoing_shifts/ongoing_shift_model.
 import 'package:hourtag/home/dashboard/model/start_shift/start_shift_model.dart';
 import 'package:hourtag/home/dashboard/model/team_activity/team_activity_model.dart';
 import 'package:hourtag/home/dashboard/model/user_profile/user_profile_model.dart';
+import 'package:hourtag/home/dashboard/model/weekly_shift/weekly_shift_model.dart';
 import 'package:hourtag/home/dashboard/repo/dashboard_repo.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:socket_io_client/socket_io_client.dart';
@@ -18,6 +19,7 @@ class DashboardCubit extends Cubit<DashboardState> {
   DashboardCubit(this.authToken,
       {required UserProfileModel userProfileModel,
       required List<TeamActivityModel> teamdata,
+      required WeeklyShiftModel weeklyShiftModel,
       required OngoingShiftModel ongoingShiftModel,
       required CompanyProfileModel companyProfileModel,
       required int index})
@@ -26,6 +28,7 @@ class DashboardCubit extends Cubit<DashboardState> {
             teamdata: teamdata,
             ongoingShiftModel: ongoingShiftModel,
             companyProfileModel: companyProfileModel,
+            weeklyShiftModel: weeklyShiftModel,
             index: index)) {
     _startSocket();
   }
@@ -58,7 +61,7 @@ class DashboardCubit extends Cubit<DashboardState> {
         emit(state.copyWith(socketStatus: SocketStatus.disconnected));
       });
 
-      socket.on("SHIFT_HAS_STARTED", (data) {
+      socket.on("SHIFT_HAS_STARTED", (data) async {
         Shift ongoingShift = Shift.fromJson(data['ongoingShift']);
         int index = state.companyProfileModel.projects!
             .indexWhere((element) => element.id == ongoingShift.projectId);
@@ -66,7 +69,8 @@ class DashboardCubit extends Cubit<DashboardState> {
             ongoingShiftModel: OngoingShiftModel(ongoingShift: ongoingShift),
             selectedIndex: index));
 
-        checkEarlyTimerStart(index);
+        await checkEarlyTimerStart(index);
+        emit(state.copyWith(status: DashboardStatus.loaded));
       });
 
       socket.on("SHIFT_HAS_ENDED", (_) => forceStopTimer());
@@ -99,6 +103,7 @@ class DashboardCubit extends Cubit<DashboardState> {
     // int second;
     // StartShiftModel data;
     // data =
+    emit(state.copyWith(status: DashboardStatus.loading));
     await repo.startShift(
         state.userProfileModel.selectedCompany?.companyId ?? 0,
         state.companyProfileModel.projects?[state.selectedIndex].id ?? 0,
@@ -112,8 +117,9 @@ class DashboardCubit extends Cubit<DashboardState> {
     // });
   }
 
-  void checkEarlyTimerStart(int index) async {
+  Future<void> checkEarlyTimerStart(int index) async {
     if (state.ongoingShiftModel.ongoingShift != null) {
+      toogleStart(true);
       controller.scrollToIndex(index, preferPosition: AutoScrollPosition.begin);
       _timer?.cancel();
 
@@ -123,7 +129,6 @@ class DashboardCubit extends Cubit<DashboardState> {
       _timer = Timer.periodic(const Duration(seconds: 1), (Timer timer) {
         second++;
         emit(state.copyWith(durationInSeconds: second));
-        toogleStart(true);
       });
     }
   }
@@ -182,12 +187,27 @@ class DashboardCubit extends Cubit<DashboardState> {
         authToken, data.selectedCompany?.companyId ?? 0);
     CompanyProfileModel companyData = await repo.getCompanyProfile(
         authToken, data.selectedCompany?.companyId ?? 0);
+    WeeklyShiftModel weeklyShiftModel = await repo.getWeeklyShift(
+        authToken, data.selectedCompany?.companyId ?? 0);
 
     emit(state.copyWith(
       userProfileModel: data,
       teamActivityModel: teamdata,
+      weeklyShiftModel: weeklyShiftModel,
       ongoingShiftModel: ongoingShiftData,
       companyProfileModel: companyData,
     ));
+  }
+
+  Future<void> delete(int shiftId) async {
+    await repo.deleteShift(shiftId, authToken);
+    forceStopTimer();
+  }
+
+  String returnUserProjectFromProjectID(int companyId) {
+    return (state.companyProfileModel.projects ?? [])
+            .firstWhere((element) => element.id == companyId)
+            .name ??
+        "";
   }
 }

@@ -35,9 +35,11 @@ class _BottomNavigationState extends State<BottomNavigation> {
       ),
       MultiBlocProvider(
           providers: [
-            BlocProvider<ShiftsCubit>(create: (context) => ShiftsCubit())
+            BlocProvider<ShiftsCubit>(
+                create: (context) => ShiftsCubit(authToken: widget.authToken))
           ],
           child: ShiftsScreen(
+            authToken: widget.authToken,
             dcubit: context.read<DashboardCubit>(),
           ))
     ];

@@ -12,12 +12,10 @@ class LoginCubit extends Cubit<LoginState> {
       emit(state.copyWith(status: Status.loading));
       String token = await repo.login(username, password);
       authCubit.updateAuthToken(token);
-      print('Here is the token  $token');
-      print('Successful');
       emit(state.copyWith(status: Status.loaded));
       return 1;
     } catch (e) {
-      print('erorr occured');
+      emit(state.copyWith(status: Status.error, error: e.toString()));
       return 0;
     }
   }
