@@ -18,7 +18,7 @@ _$ShiftActivityModelImpl _$$ShiftActivityModelImplFromJson(
       thisMonth: json['thisMonth'] == null
           ? null
           : ThisMonth.fromJson(json['thisMonth'] as Map<String, dynamic>),
-      percentage: json['percentage'] as int?,
+      percentage: (json['percentage'] as num?)?.toInt(),
       targetedWorkingHoursType: json['targetedWorkingHoursType'] as String?,
     );
 
@@ -34,9 +34,9 @@ Map<String, dynamic> _$$ShiftActivityModelImplToJson(
 
 _$ThisMonthImpl _$$ThisMonthImplFromJson(Map<String, dynamic> json) =>
     _$ThisMonthImpl(
-      hours: json['hours'] as int?,
-      minutes: json['minutes'] as int?,
-      seconds: json['seconds'] as int?,
+      hours: (json['hours'] as num?)?.toInt(),
+      minutes: (json['minutes'] as num?)?.toInt(),
+      seconds: (json['seconds'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$$ThisMonthImplToJson(_$ThisMonthImpl instance) =>

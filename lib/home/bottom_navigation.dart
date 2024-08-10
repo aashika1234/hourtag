@@ -23,7 +23,6 @@ class _BottomNavigationState extends State<BottomNavigation> {
   int selectedIndex = 0;
   @override
   void initState() {
-    print(context.read<DashboardCubit>().state.userProfileModel);
     super.initState();
   }
 

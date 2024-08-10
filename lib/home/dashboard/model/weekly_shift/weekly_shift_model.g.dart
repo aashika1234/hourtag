@@ -37,9 +37,9 @@ Map<String, dynamic> _$$WeeklyShiftModelImplToJson(
 _$GlobalShiftTimeImpl _$$GlobalShiftTimeImplFromJson(
         Map<String, dynamic> json) =>
     _$GlobalShiftTimeImpl(
-      hours: json['hours'] as int?,
-      minutes: json['minutes'] as int?,
-      seconds: json['seconds'] as int?,
+      hours: (json['hours'] as num?)?.toInt(),
+      minutes: (json['minutes'] as num?)?.toInt(),
+      seconds: (json['seconds'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$$GlobalShiftTimeImplToJson(
@@ -71,7 +71,7 @@ Map<String, dynamic> _$$TodaysShiftsImplToJson(_$TodaysShiftsImpl instance) =>
 
 _$ProjectImpl _$$ProjectImplFromJson(Map<String, dynamic> json) =>
     _$ProjectImpl(
-      id: json['id'] as int?,
+      id: (json['id'] as num?)?.toInt(),
       name: json['name'] as String?,
       colorCode: json['colorCode'] as String?,
     );
@@ -88,14 +88,14 @@ _$WeeklyShiftSummaryImpl _$$WeeklyShiftSummaryImplFromJson(
     _$WeeklyShiftSummaryImpl(
       weekStart: json['weekStart'] as String?,
       weekEnd: json['weekEnd'] as String?,
-      totalTargetHours: json['totalTargetHours'] as int?,
+      totalTargetHours: (json['totalTargetHours'] as num?)?.toInt(),
       totalHoursWorked: (json['totalHoursWorked'] as num?)?.toDouble(),
       averageWorkingHoursPerDay: json['averageWorkingHoursPerDay'] == null
           ? null
           : AverageWorkingHoursPerDay.fromJson(
               json['averageWorkingHoursPerDay'] as Map<String, dynamic>),
-      percentage: json['percentage'] as int?,
-      hoursWorkedOvertime: json['hoursWorkedOvertime'] as int?,
+      percentage: (json['percentage'] as num?)?.toInt(),
+      hoursWorkedOvertime: (json['hoursWorkedOvertime'] as num?)?.toInt(),
       totalHoursWorkedInHoursMinutes: json['totalHoursWorkedInHoursMinutes'] ==
               null
           ? null
@@ -119,8 +119,8 @@ Map<String, dynamic> _$$WeeklyShiftSummaryImplToJson(
 _$AverageWorkingHoursPerDayImpl _$$AverageWorkingHoursPerDayImplFromJson(
         Map<String, dynamic> json) =>
     _$AverageWorkingHoursPerDayImpl(
-      hours: json['hours'] as int?,
-      minutes: json['minutes'] as int?,
+      hours: (json['hours'] as num?)?.toInt(),
+      minutes: (json['minutes'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$$AverageWorkingHoursPerDayImplToJson(

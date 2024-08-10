@@ -14,10 +14,12 @@ class ManualShiftDatePickerCubit extends Cubit<ManualShiftDatePickerState> {
       : super(ManualShiftDatePickerState.initial()) {
     if (shift != null) {
       emit(state.copyWith(
-          manualShiftStartDate: shift!.start_time,
-          manualShiftEndDate: shift!.end_time,
-          manualShiftStartTime: TimeOfDay.fromDateTime(shift!.start_time!),
-          manualShiftEndTime: TimeOfDay.fromDateTime(shift!.end_time!)));
+          manualShiftStartDate: shift!.start_time?.toLocal(),
+          manualShiftEndDate: shift!.end_time?.toLocal(),
+          manualShiftStartTime:
+              TimeOfDay.fromDateTime(shift!.start_time!.toLocal()),
+          manualShiftEndTime:
+              TimeOfDay.fromDateTime(shift!.end_time!.toLocal())));
     }
   }
   ManualShiftRepo repo = ManualShiftRepo();
@@ -50,7 +52,8 @@ class ManualShiftDatePickerCubit extends Cubit<ManualShiftDatePickerState> {
       emit(state.copyWith(status: Status.loading));
       String status = await repo.shiftChangeRequest(
           purpose: shift != null ? "EDITING" : "MANUAL",
-          companyID: companyID, 
+          shiftId: shift?.id,
+          companyID: companyID,
           startTime: state.manualShiftStartDate.copyWith(
               hour: state.manualShiftStartTime.hour,
               minute: state.manualShiftStartTime.minute),

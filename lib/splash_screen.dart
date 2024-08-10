@@ -24,7 +24,7 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   late AuthCubit cubit;
-  Future<void> checkIfAuthenticated() async {
+  Future<void> checkIfAuthenticated({required BuildContext context}) async {
     DashboardRepo repo = DashboardRepo();
     if (cubit.state.authToken.isEmpty) {
       Navigator.push(context,
@@ -52,22 +52,24 @@ class _SplashScreenState extends State<SplashScreen> {
           return;
         }
 
+        cubit.updateUserProfileModel(data);
+
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
               builder: (context) => BlocProvider(
-                    create: (context) => DashboardCubit(cubit.state.authToken,
-                        index: index,
-                        teamdata: teamdata,
-                        weeklyShiftModel: weeklyShiftModel,
-                        ongoingShiftModel: ongoingShiftData,
-                        companyProfileModel: companyData,
-                        userProfileModel: data),
+                    create: (context) => DashboardCubit(
+                      authCubit: cubit,
+                      index: index,
+                      teamdata: teamdata,
+                      weeklyShiftModel: weeklyShiftModel,
+                      ongoingShiftModel: ongoingShiftData,
+                      companyProfileModel: companyData,
+                    ),
                     child: BottomNavigation(authToken: cubit.state.authToken),
                   )),
         );
       } catch (e) {
-        print(e.toString());
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const LoginScreen()),
@@ -82,7 +84,7 @@ class _SplashScreenState extends State<SplashScreen> {
     cubit = context.read<AuthCubit>();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      checkIfAuthenticated();
+      checkIfAuthenticated(context: context);
     });
   }
 

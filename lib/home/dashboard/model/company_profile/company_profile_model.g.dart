@@ -9,7 +9,7 @@ part of 'company_profile_model.dart';
 _$CompanyProfileModelImpl _$$CompanyProfileModelImplFromJson(
         Map<String, dynamic> json) =>
     _$CompanyProfileModelImpl(
-      id: json['id'] as int?,
+      id: (json['id'] as num?)?.toInt(),
       created_at: json['created_at'] == null
           ? null
           : DateTime.parse(json['created_at'] as String),
@@ -24,7 +24,7 @@ _$CompanyProfileModelImpl _$$CompanyProfileModelImplFromJson(
       preferrableWorkStart: json['preferrableWorkStart'] as String?,
       preferrableWorkEnd: json['preferrableWorkEnd'] as String?,
       logo: json['logo'] as String?,
-      company_size: json['company_size'] as int?,
+      company_size: (json['company_size'] as num?)?.toInt(),
       usersAndCompanies: (json['usersAndCompanies'] as List<dynamic>?)
           ?.map((e) => UsersAndCompany.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -54,7 +54,7 @@ Map<String, dynamic> _$$CompanyProfileModelImplToJson(
 
 _$ProjectImpl _$$ProjectImplFromJson(Map<String, dynamic> json) =>
     _$ProjectImpl(
-      id: json['id'] as int?,
+      id: (json['id'] as num?)?.toInt(),
       created_at: json['created_at'] == null
           ? null
           : DateTime.parse(json['created_at'] as String),
@@ -63,8 +63,8 @@ _$ProjectImpl _$$ProjectImplFromJson(Map<String, dynamic> json) =>
       name: json['name'] as String?,
       description: json['description'],
       colorCode: json['colorCode'] as String?,
-      createdByUserId: json['createdByUserId'] as int?,
-      companyId: json['companyId'] as int?,
+      createdByUserId: (json['createdByUserId'] as num?)?.toInt(),
+      companyId: (json['companyId'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$$ProjectImplToJson(_$ProjectImpl instance) =>
@@ -83,8 +83,8 @@ Map<String, dynamic> _$$ProjectImplToJson(_$ProjectImpl instance) =>
 _$UsersAndCompanyImpl _$$UsersAndCompanyImplFromJson(
         Map<String, dynamic> json) =>
     _$UsersAndCompanyImpl(
-      userId: json['userId'] as int?,
-      companyId: json['companyId'] as int?,
+      userId: (json['userId'] as num?)?.toInt(),
+      companyId: (json['companyId'] as num?)?.toInt(),
       role: json['role'] as String?,
       position: json['position'] as String?,
       created_at: json['created_at'] == null
@@ -92,8 +92,8 @@ _$UsersAndCompanyImpl _$$UsersAndCompanyImplFromJson(
           : DateTime.parse(json['created_at'] as String),
       isCurrentlySelectedCompany: json['isCurrentlySelectedCompany'] as bool?,
       isUserActive: json['isUserActive'] as bool?,
-      projectIdLastWorkedOn: json['projectIdLastWorkedOn'] as int?,
-      targetedWorkingHours: json['targetedWorkingHours'] as int?,
+      projectIdLastWorkedOn: (json['projectIdLastWorkedOn'] as num?)?.toInt(),
+      targetedWorkingHours: (json['targetedWorkingHours'] as num?)?.toInt(),
       targetedWorkingHoursType: json['targetedWorkingHoursType'] as String?,
       updated_at: json['updated_at'] == null
           ? null
@@ -123,7 +123,7 @@ Map<String, dynamic> _$$UsersAndCompanyImplToJson(
     };
 
 _$UserImpl _$$UserImplFromJson(Map<String, dynamic> json) => _$UserImpl(
-      id: json['id'] as int?,
+      id: (json['id'] as num?)?.toInt(),
       created_at: json['created_at'] == null
           ? null
           : DateTime.parse(json['created_at'] as String),

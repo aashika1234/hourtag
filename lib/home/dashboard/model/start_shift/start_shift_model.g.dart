@@ -14,11 +14,11 @@ _$StartShiftModelImpl _$$StartShiftModelImplFromJson(
           : TotalShiftTime.fromJson(
               json['total_shift_time'] as Map<String, dynamic>),
       note: json['note'] as String?,
-      userId: json['userId'] as int?,
-      companyId: json['companyId'] as int?,
-      projectId: json['projectId'] as int?,
+      userId: (json['userId'] as num?)?.toInt(),
+      companyId: (json['companyId'] as num?)?.toInt(),
+      projectId: (json['projectId'] as num?)?.toInt(),
       shiftTimezone: json['shiftTimezone'] as String?,
-      id: json['id'] as int?,
+      id: (json['id'] as num?)?.toInt(),
       created_at: json['created_at'] == null
           ? null
           : DateTime.parse(json['created_at'] as String),

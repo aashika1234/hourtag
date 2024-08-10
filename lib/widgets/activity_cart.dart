@@ -11,11 +11,11 @@ const TextStyle boldGreyTextStyle =
     TextStyle(color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 19);
 
 class ActivityCart extends StatefulWidget {
-  final CustomYourActivityModel customYourActivityModel;
+  final CustomYourActivityModel? customYourActivityModel;
   final double totalHours;
   final String type;
   const ActivityCart({
-    required this.customYourActivityModel,
+    this.customYourActivityModel,
     required this.totalHours,
     required this.type,
     super.key,
@@ -38,9 +38,17 @@ class _ActivityCartState extends State<ActivityCart>
       duration: const Duration(milliseconds: 500),
     );
     expanded = ValueNotifier(false);
-    percentage = (widget.customYourActivityModel.totalHour +
-            widget.customYourActivityModel.totalMinute) /
+    double tempPerc = ((widget.customYourActivityModel?.totalHour) ??
+            0 + (widget.customYourActivityModel?.totalMinute ?? 0)) /
         (widget.totalHours * 60 * 60);
+    if (tempPerc > 1) {
+      percentage = 1;
+    } else if (tempPerc < 0) {
+      percentage = 0;
+    } else {
+      percentage = tempPerc;
+    }
+
     expanded.addListener(() {
       if (expanded.value) {
         animationController.forward();
@@ -63,20 +71,22 @@ class _ActivityCartState extends State<ActivityCart>
         children: [
           Row(
             children: [
-              CircularPercentIndicator(
-                radius: 44.0,
-                lineWidth: 7.0,
-                backgroundColor: Colors.grey,
-                percent: percentage,
-                center: Text(
-                  "${(percentage * 100).toInt().toString()}%",
-                  style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600),
-                ),
-                progressColor: Colors.green,
-              ),
+              widget.totalHours == 0
+                  ? const SizedBox()
+                  : CircularPercentIndicator(
+                      radius: 44.0,
+                      lineWidth: 7.0,
+                      backgroundColor: Colors.grey,
+                      percent: percentage,
+                      center: Text(
+                        "${(percentage * 100).toInt().toString()}%",
+                        style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600),
+                      ),
+                      progressColor: Colors.green,
+                    ),
               const SizedBox(
                 width: 16,
               ),
@@ -88,18 +98,24 @@ class _ActivityCartState extends State<ActivityCart>
                       children: [
                         TextSpan(
                             text:
-                                '${widget.customYourActivityModel.totalHour ~/ 3600}',
+                                '${(widget.customYourActivityModel?.totalHour ?? 0) ~/ 3600}',
                             style: boldBlackTextStyle),
                         const TextSpan(text: 'h', style: boldGreyTextStyle),
                         TextSpan(
                             text:
-                                ' ${widget.customYourActivityModel.totalMinute ~/ 60}',
+                                ' ${(widget.customYourActivityModel?.totalMinute ?? 0) ~/ 60}',
                             style: boldBlackTextStyle),
-                        const TextSpan(text: 'm of ', style: boldGreyTextStyle),
-                        TextSpan(
-                            text: '${widget.totalHours.toInt()}',
-                            style: boldBlackTextStyle),
-                        const TextSpan(text: 'h', style: boldGreyTextStyle),
+                        widget.totalHours != 0
+                            ? const TextSpan(
+                                text: 'm of ', style: boldGreyTextStyle)
+                            : const TextSpan(
+                                text: 'm ', style: boldGreyTextStyle),
+                        if (widget.totalHours != 0)
+                          TextSpan(
+                              text: '${widget.totalHours.toInt()}',
+                              style: boldBlackTextStyle),
+                        if (widget.totalHours != 0)
+                          const TextSpan(text: 'h', style: boldGreyTextStyle),
                       ],
                     ),
                   ),
@@ -107,7 +123,7 @@ class _ActivityCartState extends State<ActivityCart>
                     height: 8,
                   ),
                   Text(
-                    'Average ${widget.customYourActivityModel.average.formatDuration()} per day',
+                    'Average ${(widget.customYourActivityModel?.average ?? 0).formatDuration()} per day',
                     style: const TextStyle(
                         color: Colors.grey,
                         fontWeight: FontWeight.w600,
@@ -123,8 +139,9 @@ class _ActivityCartState extends State<ActivityCart>
               return Container(
                 height: 50 +
                     (62 *
-                            widget.customYourActivityModel.customPastShiftModel
-                                .length) *
+                            (widget.customYourActivityModel
+                                    ?.customPastShiftModel.length ??
+                                0)) *
                         animationController.value,
                 margin: const EdgeInsets.only(top: 16),
                 decoration: BoxDecoration(
@@ -137,17 +154,22 @@ class _ActivityCartState extends State<ActivityCart>
                           ? const SizedBox()
                           : Column(
                               children: List.generate(
-                                  widget.customYourActivityModel
-                                      .customPastShiftModel.length,
+                                  (widget.customYourActivityModel
+                                          ?.customPastShiftModel.length ??
+                                      0),
                                   (ind) => WeeklyDetailedShiftCart(
-                                      title: widget.customYourActivityModel
+                                      title: widget.customYourActivityModel!
                                           .customPastShiftModel[ind].title,
-                                      shiftCount: widget.customYourActivityModel
-                                          .customPastShiftModel[ind].shiftCount,
-                                      totalHours: widget.customYourActivityModel
-                                          .customPastShiftModel[ind].hours,
+                                      shiftCount: widget
+                                          .customYourActivityModel!
+                                          .customPastShiftModel[ind]
+                                          .shiftCount,
+                                      totalHours: widget
+                                          .customYourActivityModel!
+                                          .customPastShiftModel[ind]
+                                          .hours,
                                       totalMinutes: widget
-                                          .customYourActivityModel
+                                          .customYourActivityModel!
                                           .customPastShiftModel[ind]
                                           .minutes))),
                       InkWell(
@@ -170,7 +192,7 @@ class _ActivityCartState extends State<ActivityCart>
                               ),
                               Text(
                                 'View ${widget.type.toLowerCase()} shifts',
-                                style: TextStyle(
+                                style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 16,
                                     fontFamily: 'Poppins',

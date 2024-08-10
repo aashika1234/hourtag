@@ -11,7 +11,7 @@ class DashboardState {
   final SocketStatus socketStatus;
   final bool started;
   final DashboardStatus status;
-  final UserProfileModel userProfileModel;
+
   final List<TeamActivityModel> teamActivityModel;
   final WeeklyShiftModel weeklyShiftModel;
   final CompanyProfileModel companyProfileModel;
@@ -25,7 +25,6 @@ class DashboardState {
       required this.weeklyShiftModel,
       required this.started,
       required this.status,
-      required this.userProfileModel,
       required this.teamActivityModel,
       required this.companyProfileModel,
       required this.startShiftModel,
@@ -36,7 +35,6 @@ class DashboardState {
         durationInSeconds,
         selectedIndex,
         started,
-        userProfileModel,
         status,
         socketStatus,
         teamActivityModel,
@@ -47,8 +45,7 @@ class DashboardState {
         weeklyShiftModel
       ];
   factory DashboardState.initial(
-      {required UserProfileModel userProfileModel,
-      required List<TeamActivityModel> teamdata,
+      {required List<TeamActivityModel> teamdata,
       required OngoingShiftModel ongoingShiftModel,
       required CompanyProfileModel companyProfileModel,
       required WeeklyShiftModel weeklyShiftModel,
@@ -60,7 +57,6 @@ class DashboardState {
         selectedIndex: index,
         started: false,
         errormsg: "",
-        userProfileModel: userProfileModel,
         teamActivityModel: teamdata,
         companyProfileModel: companyProfileModel,
         startShiftModel: const StartShiftModel(),
@@ -74,7 +70,6 @@ class DashboardState {
       bool? started,
       DashboardStatus? status,
       SocketStatus? socketStatus,
-      UserProfileModel? userProfileModel,
       List<TeamActivityModel>? teamActivityModel,
       String? errormsg,
       CompanyProfileModel? companyProfileModel,
@@ -88,7 +83,6 @@ class DashboardState {
         selectedIndex: selectedIndex ?? this.selectedIndex,
         started: started ?? this.started,
         errormsg: errormsg ?? this.errormsg,
-        userProfileModel: userProfileModel ?? this.userProfileModel,
         teamActivityModel: teamActivityModel ?? this.teamActivityModel,
         companyProfileModel: companyProfileModel ?? this.companyProfileModel,
         startShiftModel: startShiftModel ?? this.startShiftModel,

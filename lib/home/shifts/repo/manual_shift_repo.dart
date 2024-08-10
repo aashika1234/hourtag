@@ -10,13 +10,16 @@ class ManualShiftRepo {
       required DateTime endTime,
       required String authToken,
       required int projectId,
+      final int? shiftId,
       required String shiftNote,
       required String shiftChangeRequestNote}) async {
     try {
       dio.setOptions(key: "Authorization", value: 'Bearer $authToken');
+
       Response response =
           await dio.post('${ApiContants.baseUrl}/shift-change-request', data: {
         "changeRequestType": purpose,
+        if (shiftId != null) "shiftId": shiftId,
         "companyId": companyID,
         "start_time": startTime.toUtc().toIso8601String(),
         "end_time": endTime.toUtc().toIso8601String(),

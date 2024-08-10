@@ -33,7 +33,7 @@ _$ShiftImpl _$$ShiftImplFromJson(Map<String, dynamic> json) => _$ShiftImpl(
           ? null
           : TotalShift.fromJson(
               json['total_shift_time'] as Map<String, dynamic>),
-      id: json['id'] as int?,
+      id: (json['id'] as num?)?.toInt(),
       created_at: json['created_at'] == null
           ? null
           : DateTime.parse(json['created_at'] as String),
@@ -48,9 +48,9 @@ _$ShiftImpl _$$ShiftImplFromJson(Map<String, dynamic> json) => _$ShiftImpl(
       end_time: json['end_time'] == null
           ? null
           : DateTime.parse(json['end_time'] as String),
-      userId: json['userId'] as int?,
-      companyId: json['companyId'] as int?,
-      projectId: json['projectId'] as int?,
+      userId: (json['userId'] as num?)?.toInt(),
+      companyId: (json['companyId'] as num?)?.toInt(),
+      projectId: (json['projectId'] as num?)?.toInt(),
       shiftTimezone: json['shiftTimezone'] as String?,
       forceStopped: json['forceStopped'] as bool?,
       shiftStatus: json['shiftStatus'] as String?,
@@ -80,7 +80,7 @@ Map<String, dynamic> _$$ShiftImplToJson(_$ShiftImpl instance) =>
 
 _$ProjectImpl _$$ProjectImplFromJson(Map<String, dynamic> json) =>
     _$ProjectImpl(
-      id: json['id'] as int?,
+      id: (json['id'] as num?)?.toInt(),
       created_at: json['created_at'] == null
           ? null
           : DateTime.parse(json['created_at'] as String),
@@ -89,8 +89,8 @@ _$ProjectImpl _$$ProjectImplFromJson(Map<String, dynamic> json) =>
       name: json['name'] as String?,
       description: json['description'],
       colorCode: json['colorCode'] as String?,
-      createdByUserId: json['createdByUserId'] as int?,
-      companyId: json['companyId'] as int?,
+      createdByUserId: (json['createdByUserId'] as num?)?.toInt(),
+      companyId: (json['companyId'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$$ProjectImplToJson(_$ProjectImpl instance) =>
@@ -108,9 +108,9 @@ Map<String, dynamic> _$$ProjectImplToJson(_$ProjectImpl instance) =>
 
 _$TotalShiftImpl _$$TotalShiftImplFromJson(Map<String, dynamic> json) =>
     _$TotalShiftImpl(
-      hours: json['hours'] as int?,
-      minutes: json['minutes'] as int?,
-      seconds: json['seconds'] as int?,
+      hours: (json['hours'] as num?)?.toInt(),
+      minutes: (json['minutes'] as num?)?.toInt(),
+      seconds: (json['seconds'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$$TotalShiftImplToJson(_$TotalShiftImpl instance) =>

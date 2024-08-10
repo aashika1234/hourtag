@@ -1,12 +1,21 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hourtag/const/api_const.dart';
+import 'package:hourtag/cubit/cubit/auth_cubit.dart';
 import 'package:hourtag/home/notification/screen/notification_screen.dart';
 import 'package:hourtag/home/profile/screen/edit_profile_Screen.dart';
 import 'package:hourtag/util/color_constant.dart';
 import 'package:hourtag/util/weight_constant.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../../login/screen/login_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({super.key});
+  const ProfileScreen({
+    super.key,
+  });
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -39,34 +48,79 @@ class _ProfileScreenState extends State<ProfileScreen> {
           const SizedBox(
             height: 85,
           ),
-          Container(
-            height: 120,
-            width: 120,
-            decoration: BoxDecoration(
-                color: ColorConstant.primaryColor,
-                borderRadius: BorderRadius.circular(32)),
+          BlocBuilder<AuthCubit, AuthState>(
+            builder: (context, state) {
+              String image = state.userProfileModel?.profile_image ?? '';
+              return Container(
+                height: 120,
+                width: 120,
+                decoration: BoxDecoration(
+                    color: ColorConstant.primaryColor,
+                    borderRadius: BorderRadius.circular(32)),
+                child: image.isEmpty
+                    ? const Icon(
+                        CupertinoIcons.profile_circled,
+                        size: 60,
+                      )
+                    : ClipRRect(
+                        borderRadius: BorderRadius.circular(32),
+                        child: CachedNetworkImage(
+                          progressIndicatorBuilder: (context, url, progress) =>
+                              const Center(
+                            child: CupertinoActivityIndicator(
+                              color: Colors.white,
+                            ),
+                          ),
+                          imageUrl: image.startsWith("https")
+                              ? image
+                              : "${ApiContants.imageBaseUrl}$image",
+                          fit: BoxFit.cover,
+                          errorWidget: (context, url, error) => const Icon(
+                            CupertinoIcons.profile_circled,
+                            size: 60,
+                          ),
+                        ),
+                      ),
+              );
+            },
           ),
           const SizedBox(
             height: 36,
           ),
-          const Text(
-            'Jane Doe',
-            style: TextStyle(
-                fontSize: 21,
-                fontWeight: FontWeightConstant.xextraBold,
-                color: Colors.white),
+          BlocBuilder<AuthCubit, AuthState>(
+            builder: (context, state) {
+              String name = state.userProfileModel?.name ?? '';
+              if (name.isEmpty) {
+                return const SizedBox();
+              }
+              return Text(
+                name,
+                style: const TextStyle(
+                    fontSize: 21,
+                    fontWeight: FontWeightConstant.xextraBold,
+                    color: Colors.white),
+              );
+            },
           ),
           const SizedBox(
             height: 8,
           ),
-          Text(
-            'jane@gmail.com',
-            style: TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeightConstant.normal,
-                color: ColorConstant.textGrey2),
+          BlocBuilder<AuthCubit, AuthState>(
+            builder: (context, state) {
+              String email = state.userProfileModel?.email ?? '';
+              if (email.isEmpty) {
+                return const SizedBox();
+              }
+              return Text(
+                email,
+                style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeightConstant.normal,
+                    color: ColorConstant.textGrey2),
+              );
+            },
           ),
-          Spacer(),
+          const Spacer(),
           Text(
             'Want to log out?',
             style: TextStyle(
@@ -96,6 +150,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             onPressed: () => Navigator.pop(context),
                           ),
                           CupertinoDialogAction(
+                            onPressed: () async {
+                              final SharedPreferences prefs =
+                                  await SharedPreferences.getInstance();
+                              prefs.remove('access_token');
+                              Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          const LoginScreen()),
+                                  ModalRoute.withName('/'));
+                            },
                             child: Text(
                               'Yes',
                               style: TextStyle(
@@ -120,10 +185,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
             height: 53,
           ),
           InkWell(
-            onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const EditProfileScreen())),
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const EditProfileScreen()));
+            },
             child: Container(
               width: MediaQuery.of(context).size.width,
               padding: const EdgeInsets.symmetric(vertical: 18),
@@ -132,7 +199,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   borderRadius: BorderRadius.circular(12)),
               child: const Center(
                 child: Text(
-                  'Edit porfile',
+                  'Edit profile',
                   style: TextStyle(
                       fontSize: 17,
                       fontWeight: FontWeightConstant.normal,

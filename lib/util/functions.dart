@@ -63,11 +63,12 @@ class Func {
   static Future<DateTime> datePicker(
       {required BuildContext context,
       DateTime? initialDate,
+      DateTime? firstDate,
       DateTime? endDate}) async {
     DateTime? pickedDate = await showDatePicker(
         context: context,
         initialDate: initialDate ?? DateTime.now(),
-        firstDate: initialDate ?? DateTime(2010),
+        firstDate: firstDate ?? initialDate ?? DateTime(2010),
         //DateTime.now() - not to allow to choose before today.
         lastDate: endDate ?? DateTime.now());
 
@@ -80,9 +81,11 @@ class Func {
 
   static showSnacksBar(
       {required String message,
+      Duration? duration,
       required BuildContext context,
       SnacksBarStatus status = SnacksBarStatus.normal}) {
     final snackBar = SnackBar(
+      duration: duration ?? const Duration(seconds: 2),
       backgroundColor: status == SnacksBarStatus.normal
           ? ColorConstant.cPurple
           : status == SnacksBarStatus.error
@@ -101,16 +104,22 @@ class Func {
   }
 
   static Future<TimeOfDay> pickTime(
-      {required BuildContext context, int? maxHour, int? minHour}) async {
+      {required BuildContext context,
+      int? maxHour,
+      int? minHour,
+      TimeOfDay? initialTime}) async {
     DateTime? time = await TimePicker.show<DateTime?>(
       context: context,
       sheet: TimePickerSheet(
+        minuteInterval: 1,
         sheetTitle: 'Select Time',
         hourTitle: 'Hour',
         minuteTitle: 'Minute',
         maxHour: maxHour ?? 24,
         minHour: minHour ?? 0,
-        initialDateTime: DateTime.now(),
+        initialDateTime: initialTime != null
+            ? DateTime(0, 0, 0, initialTime.hour, initialTime.minute)
+            : null,
         sheetCloseIconColor: ColorConstant.cPurple,
         hourTitleStyle: TextStyle(
             fontSize: 18,

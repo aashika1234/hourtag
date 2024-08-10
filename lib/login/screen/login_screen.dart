@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -27,10 +30,8 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  TextEditingController emailController =
-      TextEditingController(text: "myhourtag@gmail.com");
-  TextEditingController passwordController =
-      TextEditingController(text: "HelloWorld123");
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
   late AuthCubit authCubit;
   late LoginCubit cubit = LoginCubit(authCubit: authCubit);
   @override
@@ -42,14 +43,57 @@ class _LoginScreenState extends State<LoginScreen> {
   DashboardRepo repo = DashboardRepo();
   final whiteTextStyle = const TextStyle(color: Colors.white);
 
+  void postLoginFunc({required int result}) async {
+    if (!context.mounted) {
+      return;
+    }
+
+    if (result == 1) {
+      UserProfileModel data =
+          await repo.getDashboardData(authCubit.state.authToken);
+      List<TeamActivityModel> teamdata = await repo.getTeamActivity(
+          authCubit.state.authToken, data.selectedCompany?.companyId ?? 0);
+      OngoingShiftModel ongoingShiftData = await repo.getOngoingShift(
+          authCubit.state.authToken, data.selectedCompany?.companyId ?? 0);
+      CompanyProfileModel companyData = await repo.getCompanyProfile(
+          authCubit.state.authToken, data.selectedCompany?.companyId ?? 0);
+      WeeklyShiftModel weeklyShiftModel = await repo.getWeeklyShift(
+          authCubit.state.authToken, data.selectedCompany?.companyId ?? 0);
+      int index = 0;
+      if (ongoingShiftData.ongoingShift != null) {
+        index = companyData.projects!.indexWhere((element) =>
+            element.id == ongoingShiftData.ongoingShift!.projectId);
+      }
+      authCubit.updateUserProfileModel(data);
+      // ignore: use_build_context_synchronously
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => BlocProvider(
+                    create: (context) => DashboardCubit(
+                        teamdata: teamdata,
+                        ongoingShiftModel: ongoingShiftData,
+                        weeklyShiftModel: weeklyShiftModel,
+                        companyProfileModel: companyData,
+                        index: index,
+                        authCubit: authCubit),
+                    child:
+                        BottomNavigation(authToken: authCubit.state.authToken),
+                  )));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    const textStyle = const TextStyle(
+        fontSize: 15, fontWeight: FontWeightConstant.bold, color: Colors.white);
     return BlocProvider.value(
       value: cubit,
       child: BlocListener<LoginCubit, LoginState>(
         listener: (context, state) {
           if (state.status == Status.error) {
             Func.showSnacksBar(
+                duration: const Duration(seconds: 4),
                 context: context,
                 message: state.error.toString(),
                 status: SnacksBarStatus.error);
@@ -133,8 +177,11 @@ class _LoginScreenState extends State<LoginScreen> {
                               color: ColorConstant.primaryColor,
                               borderRadius: BorderRadius.circular(12)),
                           child: Center(
-                              child: CircularProgressIndicator(
-                            color: ColorConstant.backgroundColor,
+                              child: SizedBox(
+                            height: 36,
+                            child: CupertinoActivityIndicator(
+                              color: ColorConstant.backgroundColor,
+                            ),
                           )),
                         )
                       : CustomnButton(
@@ -142,65 +189,13 @@ class _LoginScreenState extends State<LoginScreen> {
                           onTap: () async {
                             int result = await context.read<LoginCubit>().login(
                                 emailController.text, passwordController.text);
-
-                            if (!context.mounted) {
-                              return;
-                            }
-
-                            if (result == 1) {
-                              UserProfileModel data = await repo
-                                  .getDashboardData(authCubit.state.authToken);
-                              List<TeamActivityModel> teamdata =
-                                  await repo.getTeamActivity(
-                                      authCubit.state.authToken,
-                                      data.selectedCompany?.companyId ?? 0);
-                              OngoingShiftModel ongoingShiftData =
-                                  await repo.getOngoingShift(
-                                      authCubit.state.authToken,
-                                      data.selectedCompany?.companyId ?? 0);
-                              CompanyProfileModel companyData =
-                                  await repo.getCompanyProfile(
-                                      authCubit.state.authToken,
-                                      data.selectedCompany?.companyId ?? 0);
-                              WeeklyShiftModel weeklyShiftModel =
-                                  await repo.getWeeklyShift(
-                                      authCubit.state.authToken,
-                                      data.selectedCompany?.companyId ?? 0);
-                              int index = 0;
-                              if (ongoingShiftData.ongoingShift != null) {
-                                index = companyData.projects!.indexWhere(
-                                    (element) =>
-                                        element.id ==
-                                        ongoingShiftData
-                                            .ongoingShift!.projectId);
-                              }
-                              // ignore: use_build_context_synchronously
-                              Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => BlocProvider(
-                                            create: (context) => DashboardCubit(
-                                                authCubit.state.authToken,
-                                                teamdata: teamdata,
-                                                ongoingShiftModel:
-                                                    ongoingShiftData,
-                                                weeklyShiftModel:
-                                                    weeklyShiftModel,
-                                                companyProfileModel:
-                                                    companyData,
-                                                userProfileModel: data,
-                                                index: index),
-                                            child: BottomNavigation(
-                                                authToken:
-                                                    authCubit.state.authToken),
-                                          )));
-                            }
+                            postLoginFunc(result: result);
                           },
                         );
                 },
               ),
               const SizedBox(
-                height: 10,
+                height: 20,
               ),
               InkWell(
                 onTap: () {
@@ -218,7 +213,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               const SizedBox(
-                height: 10,
+                height: 20,
               ),
               Row(
                 children: [
@@ -247,11 +242,40 @@ class _LoginScreenState extends State<LoginScreen> {
                 ],
               ),
               const SizedBox(
-                height: 10,
+                height: 20,
               ),
-              BorderedButton(
-                text: 'Sign in with Google',
-                onTap: () {},
+              Row(
+                children: [
+                  Expanded(
+                    child: BorderedButton(
+                      style: textStyle,
+                      svg: (Platform.isAndroid)
+                          ? null
+                          : "assets/icons/google.svg",
+                      text: 'Sign in with Google',
+                      onTap: () async {
+                        int result = await cubit.signInWithGoogle();
+                        postLoginFunc(result: result);
+                      },
+                    ),
+                  ),
+                  if (Platform.isIOS)
+                    const SizedBox(
+                      width: 20,
+                    ),
+                  if (Platform.isIOS)
+                    Expanded(
+                      child: BorderedButton(
+                        style: textStyle,
+                        svg: "assets/icons/apple.svg",
+                        text: '',
+                        onTap: () async {
+                          int result = await cubit.signInWithApple();
+                          postLoginFunc(result: result);
+                        },
+                      ),
+                    ),
+                ],
               ),
               const Spacer(),
               Padding(
@@ -276,28 +300,45 @@ class _LoginScreenState extends State<LoginScreen> {
 }
 
 class BorderedButton extends StatelessWidget {
-  const BorderedButton({super.key, required this.text, required this.onTap});
+  const BorderedButton(
+      {super.key,
+      required this.text,
+      required this.onTap,
+      this.style,
+      this.svg});
   final String text;
+  final TextStyle? style;
+  final String? svg;
   final void Function()? onTap;
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 18),
+        padding: (svg != null)
+            ? const EdgeInsets.all(10)
+            : const EdgeInsets.symmetric(vertical: 18),
         decoration: BoxDecoration(
             border: Border.all(
               color: ColorConstant.primaryColor,
             ),
             borderRadius: BorderRadius.circular(12)),
         child: Center(
-            child: Text(
-          text,
-          style: const TextStyle(
-              fontSize: 17,
-              fontWeight: FontWeightConstant.bold,
-              color: Colors.white),
-        )),
+            child: (svg != null)
+                ? SvgPicture.asset(
+                    svg!,
+                    height: 40,
+                    // ignore: deprecated_member_use
+                    color: Colors.white,
+                  )
+                : Text(
+                    text,
+                    style: style ??
+                        const TextStyle(
+                            fontSize: 17,
+                            fontWeight: FontWeightConstant.bold,
+                            color: Colors.white),
+                  )),
       ),
     );
   }

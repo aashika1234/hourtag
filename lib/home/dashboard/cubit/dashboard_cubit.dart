@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:hourtag/const/api_const.dart';
+import 'package:hourtag/cubit/cubit/auth_cubit.dart';
 import 'package:hourtag/home/dashboard/model/company_profile/company_profile_model.dart';
 import 'package:hourtag/home/dashboard/model/ongoing_shifts/ongoing_shift_model.dart';
 import 'package:hourtag/home/dashboard/model/start_shift/start_shift_model.dart';
@@ -10,58 +12,68 @@ import 'package:hourtag/home/dashboard/model/team_activity/team_activity_model.d
 import 'package:hourtag/home/dashboard/model/user_profile/user_profile_model.dart';
 import 'package:hourtag/home/dashboard/model/weekly_shift/weekly_shift_model.dart';
 import 'package:hourtag/home/dashboard/repo/dashboard_repo.dart';
+import 'package:hourtag/util/functions.dart';
+import 'package:logger/logger.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:socket_io_client/socket_io_client.dart';
+import 'package:socket_io_client/socket_io_client.dart' as ioc;
 
 part 'dashboard_state.dart';
 
 class DashboardCubit extends Cubit<DashboardState> {
-  DashboardCubit(this.authToken,
-      {required UserProfileModel userProfileModel,
+  final AuthCubit authCubit;
+  DashboardCubit(
+      {required this.authCubit,
       required List<TeamActivityModel> teamdata,
       required WeeklyShiftModel weeklyShiftModel,
       required OngoingShiftModel ongoingShiftModel,
       required CompanyProfileModel companyProfileModel,
       required int index})
       : super(DashboardState.initial(
-            userProfileModel: userProfileModel,
             teamdata: teamdata,
             ongoingShiftModel: ongoingShiftModel,
             companyProfileModel: companyProfileModel,
             weeklyShiftModel: weeklyShiftModel,
-            index: index)) {
-    _startSocket();
-  }
+            index: index));
+
+  //getter for company id
+  int get companyId =>
+      authCubit.state.userProfileModel?.selectedCompany?.companyId ?? -1;
+
+  String get authToken => authCubit.state.authToken;
   //test
   DashboardRepo repo = DashboardRepo();
-  final String authToken;
-  late Socket socket;
+  late Socket? socket;
   AutoScrollController controller = AutoScrollController();
-  Future<void> _startSocket() async {
+  Future<void> startSocket() async {
     final String currentTimeZone = await FlutterTimezone.getLocalTimezone();
     socket = io(
         ApiContants.baseUrl,
         OptionBuilder()
             .setTransports(['websocket']) // for Flutter or Dart VM
-            .disableAutoConnect() // disable auto-connection
+
             .setExtraHeaders({
               'authorization': 'Bearer $authToken',
               'timezone': currentTimeZone
-            }) // optional
+            })
+            .disableAutoConnect()
+            .enableReconnection()
+            .enableForceNew()
             .build());
 
     try {
-      socket.connect();
-      socket.onConnect((data) {
+      socket!.connect();
+      socket!.onConnect((data) {
         emit(state.copyWith(socketStatus: SocketStatus.connected));
         checkEarlyTimerStart(state.selectedIndex);
       });
 
-      socket.onDisconnect((_) {
+      socket!.onDisconnect((e) {
         emit(state.copyWith(socketStatus: SocketStatus.disconnected));
       });
 
-      socket.on("SHIFT_HAS_STARTED", (data) async {
+      socket!.on("SHIFT_HAS_STARTED", (data) async {
+        print('SHIFT HAS STARTED');
         Shift ongoingShift = Shift.fromJson(data['ongoingShift']);
         int index = state.companyProfileModel.projects!
             .indexWhere((element) => element.id == ongoingShift.projectId);
@@ -73,13 +85,15 @@ class DashboardCubit extends Cubit<DashboardState> {
         emit(state.copyWith(status: DashboardStatus.loaded));
       });
 
-      socket.on("SHIFT_HAS_ENDED", (_) => forceStopTimer());
+      socket!.on("SHIFT_HAS_ENDED", (_) {
+        forceStopTimer();
+      });
 
-      socket.onReconnect((_) {
+      socket!.onReconnect((e) {
         emit(state.copyWith(socketStatus: SocketStatus.reconnecting));
       });
 
-      socket.onError((_) {
+      socket!.onError((e) {
         emit(state.copyWith(socketStatus: SocketStatus.error));
       });
     } catch (e) {
@@ -88,7 +102,6 @@ class DashboardCubit extends Cubit<DashboardState> {
   }
 
   void changeSelectedIndex(int index) {
-    print('tapped');
     emit(state.copyWith(selectedIndex: index));
   }
 
@@ -98,16 +111,26 @@ class DashboardCubit extends Cubit<DashboardState> {
 
   Timer? _timer;
 
-  void startTaskTimer() async {
+  void startTaskTimer({required BuildContext context}) async {
     // _timer?.cancel();
     // int second;
     // StartShiftModel data;
     // data =
     emit(state.copyWith(status: DashboardStatus.loading));
-    await repo.startShift(
-        state.userProfileModel.selectedCompany?.companyId ?? 0,
-        state.companyProfileModel.projects?[state.selectedIndex].id ?? 0,
-        authToken);
+    try {
+      Logger().d(authCubit.state.userProfileModel?.selectedCompany?.toJson());
+      await repo.startShift(
+          companyId,
+          state.companyProfileModel.projects?[state.selectedIndex].id ?? 0,
+          authToken);
+      emit(state.copyWith(status: DashboardStatus.error));
+    } catch (e) {
+      Func.showSnacksBar(
+          context: context,
+          message: e.toString(),
+          status: SnacksBarStatus.error);
+      emit(state.copyWith(status: DashboardStatus.error));
+    }
     // emit(state.copyWith(startShiftModel: data));
     // second = findTimeForStarted(state.startShiftModel.start_time.toString());
     // _timer = Timer.periodic(const Duration(seconds: 1), (Timer timer) {
@@ -134,11 +157,7 @@ class DashboardCubit extends Cubit<DashboardState> {
   }
 
   int findTimeForStarted(String? startedTime) {
-    // Log the input to debug
-    print('Started time input: $startedTime');
-
     if (startedTime == null || startedTime.isEmpty) {
-      print('Error: startedTime is null or empty');
       return -1; // Handle null or empty string appropriately.
     }
 
@@ -155,8 +174,15 @@ class DashboardCubit extends Cubit<DashboardState> {
   }
 
   void stopTimer(String note, BuildContext context) async {
-    await repo.stopShift(note, authToken);
-    // ignore: use_build_context_synchronously
+    try {
+      await repo.stopShift(note, authToken);
+    } catch (e) {
+      Func.showSnacksBar(
+          // ignore: use_build_context_synchronously
+          context: context,
+          message: e.toString(),
+          status: SnacksBarStatus.error);
+    }
     Navigator.pop(context);
   }
 
@@ -191,12 +217,12 @@ class DashboardCubit extends Cubit<DashboardState> {
         authToken, data.selectedCompany?.companyId ?? 0);
 
     emit(state.copyWith(
-      userProfileModel: data,
       teamActivityModel: teamdata,
       weeklyShiftModel: weeklyShiftModel,
       ongoingShiftModel: ongoingShiftData,
       companyProfileModel: companyData,
     ));
+    authCubit.updateUserProfileModel(data);
   }
 
   Future<void> delete(int shiftId) async {
@@ -209,5 +235,11 @@ class DashboardCubit extends Cubit<DashboardState> {
             .firstWhere((element) => element.id == companyId)
             .name ??
         "";
+  }
+
+  void destorySocket() {
+    socket!.dispose();
+    socket = null;
+    ioc.cache.clear();
   }
 }

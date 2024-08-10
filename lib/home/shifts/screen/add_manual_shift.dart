@@ -14,7 +14,7 @@ import '../../../util/weight_constant.dart';
 import '../../dashboard/cubit/dashboard_cubit.dart';
 import '../../dashboard/model/ongoing_shifts/ongoing_shift_model.dart';
 
-Future<void> addManualShift(BuildContext context,
+Future<int?> addManualShift(BuildContext context,
     {required DashboardCubit dcubit, Shift? shift}) {
   TextEditingController note = TextEditingController(text: shift?.note ?? "");
   if (shift != null) {
@@ -26,9 +26,8 @@ Future<void> addManualShift(BuildContext context,
       ManualShiftDatePickerCubit(
           shift: shift,
           authToken: context.read<AuthCubit>().state.authToken,
-          companyID:
-              dcubit.state.userProfileModel.selectedCompany?.company?.id ?? -1);
-  return showModalBottomSheet<void>(
+          companyID: dcubit.companyId);
+  return showModalBottomSheet<int?>(
       context: context,
       isScrollControlled: true,
       builder: (BuildContext context) {
@@ -50,10 +49,14 @@ Future<void> addManualShift(BuildContext context,
                 Func.showSnacksBar(
                     context: context,
                     message: state.error == "PENDING"
-                        ? "Shift request sent successfully"
-                        : "Shift added successfully",
+                        ? shift != null
+                            ? "Shift update request sent successfully"
+                            : "Shift request sent successfully"
+                        : shift != null
+                            ? "Shift updated successfully"
+                            : "Shift added successfully",
                     status: SnacksBarStatus.success);
-                Navigator.pop(context);
+                Navigator.pop(context, 1);
               }
             },
             listenWhen: (previous, current) {
@@ -195,7 +198,9 @@ Future<void> addManualShift(BuildContext context,
                                                 : () async {
                                                     TimeOfDay pickedTime =
                                                         await Func.pickTime(
-                                                            context: context);
+                                                            context: context,
+                                                            initialTime: state
+                                                                .manualShiftStartTime);
                                                     if (calculateTimeDifferenceinSeconds(
                                                             state
                                                                 .manualShiftStartDate
@@ -285,7 +290,9 @@ Future<void> addManualShift(BuildContext context,
                                                 : () async {
                                                     TimeOfDay pickedTime =
                                                         await Func.pickTime(
-                                                            context: context);
+                                                            context: context,
+                                                            initialTime: state
+                                                                .manualShiftEndTime);
                                                     if (calculateTimeDifferenceinSeconds(
                                                             state
                                                                 .manualShiftStartDate

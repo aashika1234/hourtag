@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hourtag/home/dashboard/cubit/dashboard_cubit.dart';
 import 'package:hourtag/home/dashboard/model/ongoing_shifts/ongoing_shift_model.dart';
-import 'package:hourtag/home/dashboard/screen/dashboard.dart';
-import 'package:hourtag/home/shifts/screen/shifts_screen.dart';
 import 'package:hourtag/util/color_constant.dart';
 import 'package:hourtag/util/date_time_helper.dart';
 import 'package:hourtag/util/weight_constant.dart';
@@ -18,6 +16,7 @@ class ShiftDetail extends StatelessWidget {
   });
   final Color color;
   final Shift shift;
+
   final void Function()? onDelete;
   final void Function()? onEditTap;
 

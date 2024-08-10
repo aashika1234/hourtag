@@ -1,19 +1,40 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:flutter_svg/svg.dart';
 import 'package:hourtag/home/dashboard/cubit/dashboard_cubit.dart';
 import 'package:hourtag/home/dashboard/model/ongoing_shifts/ongoing_shift_model.dart';
+import 'package:hourtag/home/dashboard/screen/dashboard.dart';
+import 'package:hourtag/home/shifts/cubit/shifts_cubit.dart';
+import 'package:hourtag/home/shifts/model/past_shifts/past_shift_model.dart';
+import 'package:hourtag/home/shifts/screen/add_manual_shift.dart';
 
 import 'package:hourtag/util/color_constant.dart';
 import 'package:hourtag/util/weight_constant.dart';
 import 'package:hourtag/widgets/shifts/shift_detail.dart';
 
-class PastShiftWidget extends StatelessWidget {
+class PastShiftWidget extends StatefulWidget {
+  final List<Shift> shifts;
+  final ValueChanged<void> refreshShift;
+  final DateTime date;
+
+  final Time time;
   const PastShiftWidget({
     super.key,
     required this.cubit,
+    required this.shifts,
+    required this.date,
+    required this.refreshShift,
+    required this.time,
   });
   final DashboardCubit cubit;
+
+  @override
+  State<PastShiftWidget> createState() => _PastShiftWidgetState();
+}
+
+class _PastShiftWidgetState extends State<PastShiftWidget> {
+  late final DashboardCubit dcubit = widget.cubit;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -34,7 +55,7 @@ class PastShiftWidget extends StatelessWidget {
               Row(
                 children: [
                   Text(
-                    '6',
+                    '${widget.time.hours}',
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeightConstant.xextraBold,
@@ -53,7 +74,7 @@ class PastShiftWidget extends StatelessWidget {
                     width: 5,
                   ),
                   Text(
-                    '10',
+                    '${widget.time.minutes}',
                     style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeightConstant.xextraBold,
@@ -74,7 +95,7 @@ class PastShiftWidget extends StatelessWidget {
               Row(
                 children: [
                   Text(
-                    '17th Feb, Friday',
+                    widget.date.toDayMonthWeekday(),
                     style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeightConstant.bold,
@@ -88,7 +109,7 @@ class PastShiftWidget extends StatelessWidget {
                     width: 6,
                   ),
                   Text(
-                    '3 shifts',
+                    '${widget.shifts.length + 1} shifts',
                     style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeightConstant.bold,
@@ -107,9 +128,48 @@ class PastShiftWidget extends StatelessWidget {
                     padding: const EdgeInsets.only(right: 12, left: 12),
                     child: ShiftDetail(
                       color: Colors.black,
-                      shift: Shift(),
-                      onDelete: () {},
-                      onEditTap: () {},
+                      shift: widget.shifts[ind],
+                      onDelete: () {
+                        showShiftDelete(context, () async {
+                          try {
+                            await dcubit.delete(
+                              widget.shifts[ind].id ?? 0,
+                            );
+                            widget.refreshShift.call(null);
+                            final snackBar = SnackBar(
+                              backgroundColor: ColorConstant.blue,
+                              content: const Text(
+                                'Successfully deleted!',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              behavior: SnackBarBehavior.floating,
+                            );
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(snackBar);
+                          } catch (e) {
+                            final snackBar = SnackBar(
+                              backgroundColor: ColorConstant.red,
+                              content: const Text(
+                                'Failed to delete the shift!',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              behavior: SnackBarBehavior.floating,
+                            );
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(snackBar);
+                          }
+                          Navigator.pop(context);
+                        });
+                      },
+                      onEditTap: () async {
+                        int? val = await addManualShift(context,
+                            dcubit: dcubit, shift: widget.shifts[ind]);
+                        if (val == 1) {
+                          widget.refreshShift.call(null);
+                        }
+                      },
                     ),
                   );
                 },
@@ -118,7 +178,7 @@ class PastShiftWidget extends StatelessWidget {
                     height: 8,
                   );
                 },
-                itemCount: 3)
+                itemCount: widget.shifts.length)
           ],
         ),
       ),

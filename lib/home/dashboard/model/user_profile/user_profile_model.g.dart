@@ -9,7 +9,7 @@ part of 'user_profile_model.dart';
 _$UserProfileModelImpl _$$UserProfileModelImplFromJson(
         Map<String, dynamic> json) =>
     _$UserProfileModelImpl(
-      id: json['id'] as int?,
+      id: (json['id'] as num?)?.toInt(),
       created_at: json['created_at'] == null
           ? null
           : DateTime.parse(json['created_at'] as String),
@@ -54,47 +54,9 @@ Map<String, dynamic> _$$UserProfileModelImplToJson(
       'selectedCompany': instance.selectedCompany,
     };
 
-_$DCompanyImpl _$$DCompanyImplFromJson(Map<String, dynamic> json) =>
-    _$DCompanyImpl(
-      userId: json['userId'] as int?,
-      companyId: json['companyId'] as int?,
-      role: json['role'] as String?,
-      position: json['position'] as String?,
-      created_at: json['created_at'] == null
-          ? null
-          : DateTime.parse(json['created_at'] as String),
-      isCurrentlySelectedCompany: json['isCurrentlySelectedCompany'] as bool?,
-      isUserActive: json['isUserActive'] as bool?,
-      projectIdLastWorkedOn: json['projectIdLastWorkedOn'],
-      targetedWorkingHours: json['targetedWorkingHours'] as int?,
-      targetedWorkingHoursType: json['targetedWorkingHoursType'] as String?,
-      updated_at: json['updated_at'],
-      deleted_at: json['deleted_at'],
-      company: json['company'] == null
-          ? null
-          : Company.fromJson(json['company'] as Map<String, dynamic>),
-    );
-
-Map<String, dynamic> _$$DCompanyImplToJson(_$DCompanyImpl instance) =>
-    <String, dynamic>{
-      'userId': instance.userId,
-      'companyId': instance.companyId,
-      'role': instance.role,
-      'position': instance.position,
-      'created_at': instance.created_at?.toIso8601String(),
-      'isCurrentlySelectedCompany': instance.isCurrentlySelectedCompany,
-      'isUserActive': instance.isUserActive,
-      'projectIdLastWorkedOn': instance.projectIdLastWorkedOn,
-      'targetedWorkingHours': instance.targetedWorkingHours,
-      'targetedWorkingHoursType': instance.targetedWorkingHoursType,
-      'updated_at': instance.updated_at,
-      'deleted_at': instance.deleted_at,
-      'company': instance.company,
-    };
-
 _$CompanyImpl _$$CompanyImplFromJson(Map<String, dynamic> json) =>
     _$CompanyImpl(
-      id: json['id'] as int?,
+      id: (json['id'] as num?)?.toInt(),
       created_at: json['created_at'] == null
           ? null
           : DateTime.parse(json['created_at'] as String),
@@ -109,7 +71,7 @@ _$CompanyImpl _$$CompanyImplFromJson(Map<String, dynamic> json) =>
       preferrableWorkStart: json['preferrableWorkStart'] as String?,
       preferrableWorkEnd: json['preferrableWorkEnd'] as String?,
       logo: json['logo'] as String?,
-      company_size: json['company_size'] as int?,
+      company_size: (json['company_size'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$$CompanyImplToJson(_$CompanyImpl instance) =>

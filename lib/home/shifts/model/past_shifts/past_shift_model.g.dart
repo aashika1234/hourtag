@@ -32,9 +32,9 @@ Map<String, dynamic> _$$PastShiftModelImplToJson(
     };
 
 _$TimeImpl _$$TimeImplFromJson(Map<String, dynamic> json) => _$TimeImpl(
-      hours: json['hours'] as int?,
-      minutes: json['minutes'] as int?,
-      seconds: json['seconds'] as int?,
+      hours: (json['hours'] as num?)?.toInt(),
+      minutes: (json['minutes'] as num?)?.toInt(),
+      seconds: (json['seconds'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$$TimeImplToJson(_$TimeImpl instance) =>
@@ -46,7 +46,7 @@ Map<String, dynamic> _$$TimeImplToJson(_$TimeImpl instance) =>
 
 _$ProjectImpl _$$ProjectImplFromJson(Map<String, dynamic> json) =>
     _$ProjectImpl(
-      id: json['id'] as int?,
+      id: (json['id'] as num?)?.toInt(),
       name: json['name'] as String?,
       colorCode: json['colorCode'] as String?,
       totalShiftTime: json['totalShiftTime'] == null
@@ -112,7 +112,7 @@ Map<String, dynamic> _$$ShiftsByDayImplToJson(_$ShiftsByDayImpl instance) =>
 
 _$ShiftUserImpl _$$ShiftUserImplFromJson(Map<String, dynamic> json) =>
     _$ShiftUserImpl(
-      id: json['id'] as int?,
+      id: (json['id'] as num?)?.toInt(),
       name: json['name'] as String?,
       email: json['email'] as String?,
       profileImage: json['profile_image'] as String?,
@@ -129,7 +129,7 @@ Map<String, dynamic> _$$ShiftUserImplToJson(_$ShiftUserImpl instance) =>
 _$PastShiftModelUserImpl _$$PastShiftModelUserImplFromJson(
         Map<String, dynamic> json) =>
     _$PastShiftModelUserImpl(
-      id: json['id'] as int?,
+      id: (json['id'] as num?)?.toInt(),
       createdAt: json['created_at'] == null
           ? null
           : DateTime.parse(json['created_at'] as String),

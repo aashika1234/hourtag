@@ -38,26 +38,80 @@ class UserProfileModel with _$UserProfileModel {
       _$UserProfileModelFromJson(json);
 }
 
-@freezed
-class DCompany with _$DCompany {
-  const factory DCompany({
-    int? userId,
-    int? companyId,
-    String? role,
-    String? position,
-    DateTime? created_at,
-    bool? isCurrentlySelectedCompany,
-    bool? isUserActive,
-    dynamic projectIdLastWorkedOn,
-    int? targetedWorkingHours,
-    String? targetedWorkingHoursType,
-    dynamic updated_at,
-    dynamic deleted_at,
-    Company? company,
-  }) = _DCompany;
+class DCompany {
+  int? userId;
+  int? companyId;
+  String? role;
+  String? position;
+  DateTime? createdAt;
+  bool? isCurrentlySelectedCompany;
+  bool? isUserActive;
+  dynamic projectIdLastWorkedOn;
+  int? targetedWorkingHours;
+  String? targetedWorkingHoursType;
+  dynamic updatedAt;
+  dynamic deletedAt;
+  Company? company;
 
-  factory DCompany.fromJson(Map<String, dynamic> json) =>
-      _$DCompanyFromJson(json);
+  DCompany({
+    this.userId,
+    this.companyId,
+    this.role,
+    this.position,
+    this.createdAt,
+    this.isCurrentlySelectedCompany,
+    this.isUserActive,
+    this.projectIdLastWorkedOn,
+    this.targetedWorkingHours,
+    String? targetedWorkingHoursType,
+    this.updatedAt,
+    this.deletedAt,
+    this.company,
+  }) : targetedWorkingHoursType = targetedWorkingHoursType == 'NONE'
+            ? null
+            : targetedWorkingHoursType;
+
+  factory DCompany.fromJson(Map<String, dynamic> json) {
+    return DCompany(
+      userId: json['userId'] as int?,
+      companyId: json['companyId'] as int?,
+      role: json['role'] as String?,
+      position: json['position'] as String?,
+      createdAt: json['created_at'] != null
+          ? DateTime.parse(json['created_at'])
+          : null,
+      isCurrentlySelectedCompany: json['isCurrentlySelectedCompany'] as bool?,
+      isUserActive: json['isUserActive'] as bool?,
+      projectIdLastWorkedOn: json['projectIdLastWorkedOn'],
+      targetedWorkingHours: json['targetedWorkingHours'] as int?,
+      targetedWorkingHoursType: json['targetedWorkingHoursType'] == 'NONE'
+          ? null
+          : json['targetedWorkingHoursType'] as String?,
+      updatedAt: json['updated_at'],
+      deletedAt: json['deleted_at'],
+      company: json['company'] != null
+          ? Company.fromJson(json['company'] as Map<String, dynamic>)
+          : null,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'userId': userId,
+      'companyId': companyId,
+      'role': role,
+      'position': position,
+      'created_at': createdAt?.toIso8601String(),
+      'isCurrentlySelectedCompany': isCurrentlySelectedCompany,
+      'isUserActive': isUserActive,
+      'projectIdLastWorkedOn': projectIdLastWorkedOn,
+      'targetedWorkingHours': targetedWorkingHours,
+      'targetedWorkingHoursType': targetedWorkingHoursType,
+      'updated_at': updatedAt,
+      'deleted_at': deletedAt,
+      'company': company?.toJson(),
+    };
+  }
 }
 
 @freezed

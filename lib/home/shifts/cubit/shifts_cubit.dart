@@ -4,6 +4,8 @@ import 'package:bloc/bloc.dart';
 import 'package:hourtag/home/shifts/model/past_shifts/past_shift_model.dart';
 import 'package:hourtag/home/shifts/repo/shift_repo.dart';
 import 'package:hourtag/widgets/activity_cart.dart';
+import 'package:intl/intl.dart';
+import 'package:logger/logger.dart';
 
 import '../model/shift_activity/shift_activity_model.dart';
 
@@ -12,6 +14,7 @@ part 'shifts_state.dart';
 class ShiftsCubit extends Cubit<ShiftsState> {
   ShiftRepo shiftRepo = ShiftRepo();
   final String authToken;
+
   ShiftsCubit({required this.authToken})
       : super(ShiftsState.initial(authToken: authToken));
   void changeSelectedIndex(int index) {
@@ -24,10 +27,39 @@ class ShiftsCubit extends Cubit<ShiftsState> {
           await shiftRepo.getActivityData(authToken, companyId);
 
       emit(state.copyWith(shiftActivityModel: shiftActivityModel));
-      print('${state.shiftActivityModel}');
     } catch (e) {
-      print(e.toString());
       throw Exception(e.toString());
+    }
+  }
+
+  void changePastShiftStartDate(DateTime date) {
+    emit(state.copyWith(
+        pastShiftStartDate:
+            DateTime(date.year, date.month, date.day, 0, 0, 0, 0, 0)));
+  }
+
+  void changePastShiftEndDate(DateTime date) {
+    emit(state.copyWith(
+        pastShiftEndDate:
+            DateTime(date.year, date.month, date.day, 23, 59, 59, 999, 999)));
+  }
+
+  Future<void> getCustomPastShift({required int companyId}) async {
+    emit(
+        state.copyWith(customShiftFetchStatus: CustomShiftFetchStatus.loading));
+    try {
+      PastShiftModel customPastShiftModel = await shiftRepo.getPastShift(
+          companyId: companyId,
+          startDate: state.pastShiftStartDate.toUtc().toIso8601String(),
+          endDate: state.pastShiftEndDate.toUtc().toIso8601String(),
+          authToken: authToken);
+
+      emit(state.copyWith(
+          customPastShiftModel: customPastShiftModel,
+          customShiftFetchStatus: CustomShiftFetchStatus.loaded));
+    } catch (e) {
+      emit(
+          state.copyWith(customShiftFetchStatus: CustomShiftFetchStatus.error));
     }
   }
 
@@ -48,62 +80,69 @@ class ShiftsCubit extends Cubit<ShiftsState> {
 
       emit(state.copyWith(
           pastShiftModel: pastShiftModel, status: ShiftsStateStatus.loaded));
-      print('${state.shiftActivityModel}');
     } catch (e) {
       emit(state.copyWith(status: ShiftsStateStatus.error));
       throw Exception(e.toString());
     }
   }
 
-  CustomYourActivityModel getCustomYourActivityModel({
+  CustomYourActivityModel? getCustomYourActivityModel({
     required String type,
   }) {
-    late int totalHour;
-    late int totalMinute;
-    late double average;
+    try {
+      late int totalHour;
+      late int totalMinute;
+      late double average;
 
-    List<CustomPastShiftModel> custompastshiftdata = [];
-    if (type == "MONTHLY") {
-      totalHour = (state.pastShiftModel.globalShiftTime?.hours ?? 0) * 60 * 60;
-      totalMinute = (state.pastShiftModel.globalShiftTime?.minutes ?? 0) * 60;
+      List<CustomPastShiftModel> custompastshiftdata = [];
+      if (type == "MONTHLY") {
+        totalHour =
+            (state.pastShiftModel.globalShiftTime?.hours ?? 0) * 60 * 60;
+        totalMinute = (state.pastShiftModel.globalShiftTime?.minutes ?? 0) * 60;
 
-      for (ShiftsByWeek weeklyData in state.pastShiftModel.shiftsByWeek ?? []) {
-        custompastshiftdata.add(CustomPastShiftModel(
-            hours: weeklyData.totalWeekTime?.hours ?? 0,
-            minutes: weeklyData.totalWeekTime?.minutes ?? 0,
-            title: weeklyData.weekStart
-                    ?.formatDateRange(weeklyData.weekEnd ?? DateTime.now()) ??
-                "-",
-            shiftCount: (weeklyData.shiftsByDay ?? []).length.toString()));
+        for (ShiftsByWeek weeklyData
+            in state.pastShiftModel.shiftsByWeek ?? []) {
+          custompastshiftdata.add(CustomPastShiftModel(
+              hours: weeklyData.totalWeekTime?.hours ?? 0,
+              minutes: weeklyData.totalWeekTime?.minutes ?? 0,
+              title: weeklyData.weekStart
+                      ?.formatDateRange(weeklyData.weekEnd ?? DateTime.now()) ??
+                  "-",
+              shiftCount: (weeklyData.shiftsByDay ?? []).length.toString()));
+        }
+      } else {
+        totalHour =
+            (state.pastShiftModel.shiftsByWeek?.first.totalWeekTime?.hours ??
+                    0) *
+                60 *
+                60;
+        totalMinute =
+            (state.pastShiftModel.shiftsByWeek?.first.totalWeekTime?.minutes ??
+                    0) *
+                60;
+
+        for (ShiftsByDay dailyData
+            in (state.pastShiftModel.shiftsByWeek?.first.shiftsByDay ?? [])) {
+          custompastshiftdata.add(CustomPastShiftModel(
+              hours: dailyData.totalDayTime?.hours ?? 0,
+              minutes: dailyData.totalDayTime?.minutes ?? 0,
+              title: dailyData.dayStart?.dayOfWeekString ?? "-",
+              shiftCount: (dailyData.shifts ?? []).length.toString()));
+        }
       }
-    } else {
-      totalHour =
-          (state.pastShiftModel.shiftsByWeek?.first.totalWeekTime?.hours ?? 0) *
-              60 *
-              60;
-      totalMinute =
-          (state.pastShiftModel.shiftsByWeek?.first.totalWeekTime?.minutes ??
-                  0) *
-              60;
+      average = (totalHour + totalMinute) / 7;
+      //TODO: confirm this/.
+      // (getDateRange(type).startDate)
+      //     .getDaysUntil((getDateRange(type).endDate));
 
-      for (ShiftsByDay dailyData
-          in (state.pastShiftModel.shiftsByWeek?.first.shiftsByDay ?? [])) {
-        custompastshiftdata.add(CustomPastShiftModel(
-            hours: dailyData.totalDayTime?.hours ?? 0,
-            minutes: dailyData.totalDayTime?.minutes ?? 0,
-            title: dailyData.dayStart?.dayOfWeekString ?? "-",
-            shiftCount: (dailyData.shifts ?? []).length.toString()));
-      }
+      return CustomYourActivityModel(
+          totalHour: totalHour,
+          totalMinute: totalMinute,
+          average: average,
+          customPastShiftModel: custompastshiftdata);
+    } catch (e) {
+      return null;
     }
-    average = (totalHour + totalMinute) /
-        (getDateRange(type).startDate)
-            .getDaysUntil((getDateRange(type).endDate));
-
-    return CustomYourActivityModel(
-        totalHour: totalHour,
-        totalMinute: totalMinute,
-        average: average,
-        customPastShiftModel: custompastshiftdata);
   }
 }
 
@@ -149,6 +188,34 @@ class CustomPastShiftModel {
 }
 
 extension DateTimeExtension on DateTime {
+  String toDayMonthWeekday() {
+    final day = this.day;
+    final daySuffix = _getDaySuffix(day);
+    final month = DateFormat.MMM().format(this);
+    final weekday = DateFormat.EEEE().format(this);
+    return '$day$daySuffix $month, $weekday';
+  }
+
+  String _getDaySuffix(int day) {
+    if (day >= 11 && day <= 13) {
+      return 'th';
+    }
+    switch (day % 10) {
+      case 1:
+        return 'st';
+      case 2:
+        return 'nd';
+      case 3:
+        return 'rd';
+      default:
+        return 'th';
+    }
+  }
+
+  String toShortMonthDay() {
+    return DateFormat.MMMd().format(this);
+  }
+
   String get dayOfWeekString {
     const List<String> weekdays = [
       'Monday',

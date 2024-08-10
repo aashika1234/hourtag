@@ -27,9 +27,9 @@ Map<String, dynamic> _$$TeamActivityModelImplToJson(
 
 _$TotalShiftTimeImpl _$$TotalShiftTimeImplFromJson(Map<String, dynamic> json) =>
     _$TotalShiftTimeImpl(
-      hours: json['hours'] as int?,
-      minutes: json['minutes'] as int?,
-      seconds: json['seconds'] as int?,
+      hours: (json['hours'] as num?)?.toInt(),
+      minutes: (json['minutes'] as num?)?.toInt(),
+      seconds: (json['seconds'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$$TotalShiftTimeImplToJson(
@@ -41,7 +41,7 @@ Map<String, dynamic> _$$TotalShiftTimeImplToJson(
     };
 
 _$UserImpl _$$UserImplFromJson(Map<String, dynamic> json) => _$UserImpl(
-      id: json['id'] as int?,
+      id: (json['id'] as num?)?.toInt(),
       email: json['email'] as String?,
       name: json['name'] as String?,
       isUserActive: json['isUserActive'] as bool?,

@@ -11,6 +11,35 @@ class LoginCubit extends Cubit<LoginState> {
     try {
       emit(state.copyWith(status: Status.loading));
       String token = await repo.login(username, password);
+      print('login vako: $token');
+      authCubit.updateAuthToken(token);
+      emit(state.copyWith(status: Status.loaded));
+      return 1;
+    } catch (e) {
+      emit(state.copyWith(status: Status.error, error: e.toString()));
+      return 0;
+    }
+  }
+
+  Future<int> signInWithApple() async {
+    try {
+      emit(state.copyWith(status: Status.loading));
+      String token = await repo.signInWithApple();
+      print('login vako: $token');
+      authCubit.updateAuthToken(token);
+      emit(state.copyWith(status: Status.loaded));
+      return 1;
+    } catch (e) {
+      emit(state.copyWith(status: Status.error, error: e.toString()));
+      return 0;
+    }
+  }
+
+  Future<int> signInWithGoogle() async {
+    try {
+      emit(state.copyWith(status: Status.loading));
+      String token = await repo.signInWithGoogle();
+      print('login vako: $token');
       authCubit.updateAuthToken(token);
       emit(state.copyWith(status: Status.loaded));
       return 1;
